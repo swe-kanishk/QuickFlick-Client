@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
-import Input from "./ui/input";
+import Input from "./ui/Input";
 import axios from "axios";
 import { toast } from "sonner";
 import { Loader, Loader2, Lock, Mail } from "lucide-react";
