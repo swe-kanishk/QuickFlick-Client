@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowLeft, Loader, Mail } from "lucide-react";
-import Input from "./ui/input";
+import Input from "./ui/Input";
 import { Link } from "react-router-dom";
 
 export default function ForgotPassword() {
