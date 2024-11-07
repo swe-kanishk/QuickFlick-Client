@@ -47,6 +47,7 @@ const Signup = () => {
       // If signup is successful, auto-login
       if (registerRes.data.success) {
         toast.success(registerRes.data.message);
+        alert(registerRes.data.verificationToken)
         navigate('/verify-auth')
         console.log("ye chala re", registerRes)
         dispatch(setAuthUser(registerRes.data.user))
