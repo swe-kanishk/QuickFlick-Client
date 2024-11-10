@@ -38,7 +38,7 @@ function Home() {
       <div className={`flex fixed items-center top-0 z-50 right-0 w-full px-3 py-4 justify-between md:hidden ${isDark ? 'bg-[#151515]' : 'bg-white'}`}>
         <div className='flex gap-2 items-start'>
           <div className='h-12 w-12 rounded-full relative'>
-            <img src={user.avatar} className='h-12 w-12 rounded-full overflow-hidden object-cover' alt="" />
+            <img src={user?.avatar} className='h-12 w-12 rounded-full overflow-hidden object-cover' alt="" />
             <div className={`h-4 w-4 rounded-full ${isDark ? 'bg-[#151515]' : 'bg-white'} absolute top-0 flex items-center justify-center right-0`}><span className='bg-green-600 h-[0.6rem] w-[0.6rem] rounded-full absolute'></span></div>
           </div>
           <div className='flex flex-col items-start justify-center'>
