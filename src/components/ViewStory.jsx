@@ -9,7 +9,7 @@ function ViewStory({ user, setViewStory }) {
 
     const getUserStories = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/v1/stories/${user}`, { withCredentials: true });
+            const response = await axios.get(`https://quickflick-server.onrender.com/api/v1/stories/${user}`, { withCredentials: true });
             console.log(response)
             return response.data.stories;
         } catch (error) {

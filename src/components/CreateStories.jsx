@@ -29,7 +29,7 @@ function CreateStories() {
     if (imagePreview) formData.append("image", file);
 
     try {
-      const response = await axios.post(`http://localhost:3000/api/v1/stories`, formData, {withCredentials: true, headers: { 'Content-Type': 'multipart/form-data',}});
+      const response = await axios.post(`https://quickflick-server.onrender.com/api/v1/stories`, formData, {withCredentials: true, headers: { 'Content-Type': 'multipart/form-data',}});
       if(response.data.success) {
         toast.success(response.data.message)
       }
