@@ -13,17 +13,20 @@ import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
+import moment from "moment";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
-  const { user } = useSelector((store) => store.auth);
+  const { user, isDark } = useSelector((store) => store.auth);
   const { posts } = useSelector((store) => store.post);
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [liked, setLiked] = useState(post?.likes.includes(user?._id) || false);
   const [postlikes, setPostLikes] = useState(post?.likes.length);
   const [comments, setComments] = useState(post?.comments);
+
+
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
     if (inputText.trim()) {
@@ -140,10 +143,10 @@ function Post({ post }) {
     }
   };
   return (
-    <div className="mt-4 w-full border-b border-gray-300 py-3 max-w-md mx-auto">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Avatar className="w-8 h-8 rounded-full overflow-hidden">
+    <div className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${isDark ? 'bg-[#212121] text-white' : 'bg-[#e5e5e5] text-black'} max-w-md mx-auto`}>
+      <div className={`flex items-center justify-between`}>
+        <div className={`flex items-center gap-3`}>
+          <Avatar className={`w-8 h-8 rounded-full overflow-hidden`}>
             <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
             <AvatarFallback>
               <img
@@ -152,36 +155,39 @@ function Post({ post }) {
               />
             </AvatarFallback>
           </Avatar>
-          <span className="flex items-center gap-2">
+          <div className={`flex items-center`}>
+            <div className="flex flex-col justify-center">
             <h1>{post?.author?.username}</h1>
+            <span className="text-[12px] text-gray-400">Posted {moment(post.createdAt).fromNow()}.</span>
+            </div>
             {post?.author?._id === user?._id && (
-              <span className="text-xs px-2 py-1 bg-gray-100 font-medium rounded-sm">
+              <span className={`text-xs ml-5 px-2 py-1 ${isDark ? 'bg-gray-100 text-black' : 'bg-gray-700 text-white'} font-medium rounded-sm`}>
                 Author
               </span>
             )}
-          </span>
+          </div>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <MoreHorizontal className="cursor-pointer" />
+            <MoreHorizontal className={`cursor-pointer`} />
           </DialogTrigger>
-          <DialogContent className="grid text-sm place-items-center text-center px-3 py-2 rounded-md bg-white">
+          <DialogContent className={`grid text-sm place-items-center text-center px-3 py-2 rounded-md bg-white`}>
             {post?.author._id !== user?._id && (
               <Button
                 variant="ghost"
-                className="cursor-pointer border-none outline-none w-full font-bold"
+                className={`cursor-pointer border-none outline-none w-full font-bold`}
               >
                 Unfollow
               </Button>
             )}
-            <Button variant="ghost" className="cursor-pointer w-full">
+            <Button variant="ghost" className={`cursor-pointer w-full`}>
               Add to favourites
             </Button>
             {user && user?._id === post?.author?._id && (
               <Button
                 onClick={deletePostHandler}
                 variant="ghost"
-                className="cursor-pointer w-full"
+                className={`cursor-pointer w-full`}
               >
                 Delete
               </Button>
@@ -189,26 +195,28 @@ function Post({ post }) {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="border-2 border-gray-400 my-2 rounded-sm overflow-hidden">
+        
+        <p className="my-5 mx-2">{post.caption}</p>
+      <div className={`my-5 rounded-[2.5rem] overflow-hidden`}>
         <img
-          className="object-cover aspect-square w-full"
+          className={`object-cover aspect-square w-full`}
           src={post?.image}
           alt=""
         />
       </div>
-      <div className="flex items-center justify-between mt-3">
-        <div className="flex items-center gap-3">
+      <div className={`flex items-center justify-between mt-3`}>
+        <div className={`flex items-center gap-3`}>
           {liked ? (
             <IoMdHeart
               onClick={likeOrDislikeHandler}
-              size={"26px"}
-              className="cursor-pointer text-red-500"
+              size="26px"
+              className={`cursor-pointer text-red-500`}
             />
           ) : (
             <IoMdHeartEmpty
               onClick={likeOrDislikeHandler}
-              size={"26px"}
-              className="cursor-pointer"
+              size="26px"
+              className={`cursor-pointer`}
             />
           )}
           <BsChat
@@ -216,32 +224,28 @@ function Post({ post }) {
               setOpen(true);
               dispatch(setSelectedPost(post));
             }}
-            size={"22px"}
-            className="cursor-pointer  hover:text-gray-600"
+            size="22px"
+            className={`cursor-pointer hover:text-gray-600`}
           />
           <PiPaperPlaneTilt
-            size={"23px"}
-            className="cursor-pointer  hover:text-gray-600"
+            size="23px"
+            className={`cursor-pointer hover:text-gray-600`}
           />
         </div>
         <FaRegBookmark
-          size={"20px"}
+          size="20px"
           onClick={savePostHandler}
-          className="cursor-pointer"
+          className={`cursor-pointer`}
         />
       </div>
-      <span className="font-medium block mt-1">{postlikes} likes</span>
-      <p>
-        <span className="font-medium mr-2">{post.author?.username}</span>
-        {post.caption}
-      </p>
+      <span className={`font-medium block mt-1`}>{post.likes.length} likes</span>
       {comments.length > 0 && (
         <span
           onClick={() => {
             setOpen(true);
             dispatch(setSelectedPost(post));
           }}
-          className="text-gray-400 cursor-pointer"
+          className={`text-gray-400 cursor-pointer`}
         >
           View all {comments.length} comments
         </span>
@@ -257,17 +261,17 @@ function Post({ post }) {
         text={text}
         setText={setText}
       />
-      <div className="flex items-center justify-between">
+      <div className={`flex items-center justify-between`}>
         <input
           type="text"
           value={text}
           onChange={changeEventHandler}
           placeholder="Add a comment..."
-          className="outline-none text-sm w-full mt-1"
+          className={`outline-none text-sm w-full mt-1 ${isDark ? 'bg-[#212121]' : 'bg-[#e5e5e5]'}`}
         />
         {text && (
           <span
-            className="text-[#3BADF8] cursor-pointer"
+            className={`text-[#3BADF8] cursor-pointer`}
             onClick={postCommentHandler}
           >
             Post
@@ -276,6 +280,7 @@ function Post({ post }) {
       </div>
     </div>
   );
+    
 }
 
 export default Post;

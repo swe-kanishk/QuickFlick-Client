@@ -7,6 +7,7 @@ const authSlice = createSlice({
         isOtpExpired: false,
         suggestedUsers: [],
         userProfile: null,
+        isDark: false,
         selectedUser: null,
     },
     reducers: {
@@ -25,14 +26,17 @@ const authSlice = createSlice({
         setIsOtpExpired: (state, action) => {
             state.isOtpExpired = action.payload
         },
-    }
-})
+        setTheme: (state, action) => {
+            state.isDark = action.payload
+        },
+}})
 
 export const { 
     setAuthUser, 
     setSuggestedUsers, 
     setUserProfile,
     setSelectedUser ,
-    setIsOtpExpired
+    setIsOtpExpired,
+    setTheme,
 } = authSlice.actions;
 export default authSlice.reducer;

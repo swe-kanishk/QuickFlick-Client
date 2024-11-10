@@ -6,7 +6,7 @@ function MainLayout() {
   return (
     <div className='flex'>
         <LeftSidebar />
-        <div className='flex-1'>
+        <div className='max-h-[calc(100vh-60px)] flex-1 overflow-hidden'>
           <Outlet />
         </div>
     </div>

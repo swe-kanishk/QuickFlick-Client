@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Post from './Post'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPosts } from '@/redux/postSlice';
 
 function Posts() {
   const { posts } = useSelector(store => store.post)
+  const { isDark } = useSelector(store => store.auth)
+
   const dispatch = useDispatch();
   useEffect(() => {
     return () => {
@@ -12,7 +14,7 @@ function Posts() {
     }
   },[])
   return (
-    <div className='flex-1 my-8 h-screen flex flex-col items-center'>
+    <div className={`flex-1 my-3 h-screen ${isDark ? 'bg-[#151515]' : 'bg-white'} flex flex-col items-center`}>
       {
         posts?.map((post) => <Post key={post._id} post={post} />)
       }

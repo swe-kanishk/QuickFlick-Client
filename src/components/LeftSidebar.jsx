@@ -31,6 +31,7 @@ function LeftSidebar() {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const { totalUnreadChats } = useSelector((store) => store.chat);
+  const [active, setActive] = useState("Home")
   const dispatch = useDispatch();
   const logoutHandler = async () => {
     try {
@@ -51,20 +52,21 @@ function LeftSidebar() {
   );
 
   const sidebarItems = [
-    { icon: <Home size={26} />, label: "Home" },
-    { icon: <Search size={26} />, label: "Search" },
+    // { icon: <Search size={26} />, label: "Search" },
     { icon: <TrendingUp size={26} />, label: "Explore" },
     { icon: <MessageCircle size={26} />, label: "Messages" },
-    { icon: <Heart size={26} />, label: "Notifications" },
     { icon: <PlusSquare size={26} />, label: "Create" },
+    { icon: <Home size={26} />, label: "Home" },
+    { icon: <Heart size={26} />, label: "Notifications" },
     {
       icon: (
         <Avatar className="w-8 h-8">
-          <AvatarImage src={user?.avatar} alt="@shadcn" />
+          <AvatarImage src={user?.avatar} className="rounded-full overflow-hidden aspect-square object-cover" alt="@shadcn" />
           <AvatarFallback>
             <img
               src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
               alt=""
+              className="h-20 w-20 rounded-full overflow-hidden aspect-square object-cover"
             />
           </AvatarFallback>
         </Avatar>
@@ -80,19 +82,27 @@ function LeftSidebar() {
         return logoutHandler();
 
       case "Profile":
-        return navigate(`/profile/${user?._id}`);
+        navigate(`/profile/${user?._id}`);
+        setActive("Profile")
+        return;
 
       case "Home":
-        return navigate("/");
+        navigate("/");
+        setActive("Home")
+        return
+
 
       case "Create":
-        return setOpen(true);
+        setOpen(true);
+        setActive("Create")
+        return
 
       case "Messages":
         return navigate("/chat");
 
       case "Notifications":
-        return setOpenNotificationBar(!openNotificationBar);
+      setOpenNotificationBar(!openNotificationBar);
+      setActive("Notifications")
     }
   };
 
@@ -108,25 +118,28 @@ function LeftSidebar() {
     Object.keys(unreadMessages).filter((userId) => unreadMessages[userId] > 0);
 
   return (
-    <div className="flex h-full">
-      <div className="flex bg-white justify-start py-8 z-50 flex-col h-screen min-w-[250px] max-w-[300px] border-r border-1">
-        <div className="px-10">
+    <>
+      <div className="flex fixed md:relative bottom-0 md:bg-white h-[60px] bg-pink-400 md:overflow-hidden justify-between md:justify-start md:py-8 z-50 flex-row md:flex-col md:h-screen md:min-w-[250px] w-full md:max-w-[300px] border-r border-1">
+        <div className="px-10 hidden md:flex">
           <Logo />
         </div>
-        <ul className="flex flex-col gap-2 px-6 py-6">
+        <ul className="flex justify-between items-center md:justify-start w-full md:flex-col gap-2 px-6 md:py-6">
           {sidebarItems.map((item) => {
             return (
               <li
                 onClick={() => sidebarHandler(item.label)}
                 key={item.label}
-                className={`flex gap-5 py-2 justify-start cursor-pointer px-3 text-[16px] rounded-lg hover:bg-gray-300 items-center ${
+                className={`flex ${active === item.label ? 'bg-white rounded-full w-14 flex items-center justify-center h-14 relative bottom-5' : ''} gap-5 py-2 md:justify-start cursor-pointer justify-center md:w-full px-3 text-[16px] h-10 w-10 items-center md:rounded-lg hover:bg-white transition-transform rounded-full md:hover:bg-gray-300 md:items-center 
+                  ${
                   item.label === "Logout"
-                    ? "absolute bottom-4 w-[13.5rem] left-4"
+                    ? "absolute hidden md:flex bottom-4 w-[13.5rem] left-4"
                     : "relative"
-                }`}
+                } ${item.label === "Messages"
+                  ? "hidden md:flex"
+                  : ""}`}
               >
                 <span>{item.icon}</span>
-                <span>{item.label}</span>
+                <span className="hidden md:flex">{item.label}</span>
                 {(item.label === "Notifications" && notificationUnreadCount) ||
                 (item.label === "Messages" && unreadUsers?.length) ? (
                   <Button
@@ -148,10 +161,10 @@ function LeftSidebar() {
         </ul>
       </div>
       <div
-        className={`p-6 w-1/5 border-r border-gray-300 fixed top-0 left-[250px] z-30 h-full bg-white transition-transform duration-300 ${
+        className={`p-6 md:w-1/5 w-screen ${openNotificationBar ? 'flex flex-col' : 'hidden'} border-r border-gray-300 inset-0 bg-white md:flex md:fixed top-0 left-[250px] z-30 h-screen overflow-y-scroll md:bg-white transition-transform duration-300 ${
           openNotificationBar
-            ? "translate-x-0 ease-in delay-200"
-            : "-translate-x-full delay-200"
+            ? "md:translate-x-0 ease-in delay-200"
+            : "md:-translate-x-full delay-200"
         }`}
       >
         {likeNotification?.length === 0 ? (
@@ -184,7 +197,7 @@ function LeftSidebar() {
         )}
       </div>
       <CreatePost open={open} setOpen={setOpen} />
-    </div>
+    </>
   );
 }
 
