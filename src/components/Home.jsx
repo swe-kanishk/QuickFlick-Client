@@ -17,6 +17,7 @@ import { setTheme } from '@/redux/authSlice'
 function Home() {
   getAllPosts()
   getSuggestedUsers()
+
   const [story, setViewStory] = useState(false);
   const { user, isDark } = useSelector(store => store.auth)
   const dispatch = useDispatch()
@@ -56,7 +57,7 @@ function Home() {
       <div className="flex-1 md:mt-0 mt-[90px] px-3 w-full overflow-x-scroll flex flex-col justify-start border-r border-gray-300">
         <div className='flex items-center justify-start gap-5'>
         <CreateStories user={user} />
-          {user?.following?.map((userStories) => userStories ? (<div className={`flex flex-col text-[12px] items-center gap-[5px] ${isDark ? 'text-white' : 'text-black'}`}><Stories user={userStories} setViewStory={setViewStory} /> <span>{userStories.username}</span></div>) : '')}
+        <Stories />
         </div>
        <Feed />
         <Outlet />
