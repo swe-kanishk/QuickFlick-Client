@@ -19,12 +19,12 @@ function Notifications() {
     (store) => store.realTimeNotification
   );
 
-  const Notifications = allNotifications.concat(realTimeNotifications);
+  const Notifications = allNotifications?.concat(realTimeNotifications);
 
   (async () => {
-    const unreadNotificationIds = Notifications.filter(
-      (notification) => !notification.isRead
-    ).map((notification) => notification._id);
+    const unreadNotificationIds = Notifications?.filter(
+      (notification) => !notification?.isRead
+    ).map((notification) => notification?._id);
 
     try {
       if (unreadNotificationIds.length > 0) {
@@ -47,7 +47,7 @@ function Notifications() {
             <p className="text-xl my-3 font-semibold flex items-center gap-2"><FaRegBell className="rotate-[-30deg] font-semibold" /> Notifications </p>
         </div>
       {Notifications &&
-        Notifications.map((notification) => {
+        Notifications?.map((notification) => {
           return (
             <div className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
                 
