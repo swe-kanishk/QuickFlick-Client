@@ -69,7 +69,7 @@ function EmailVerification() {
       const verificationCode = code.join("");
       try {
         const response = await axios.post(
-          `https://quickflick-server.onrender.com/api/v1/user/verify-email`,
+          `${import.meta.env.VITE_API_URL}/api/v1/user/verify-email`,
           { code: verificationCode }
         );
         toast.success("Email verified successfully");
@@ -88,7 +88,7 @@ function EmailVerification() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://quickflick-server.onrender.com/api/v1/user/resend-otp`, { withCredentials: true });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/resend-otp`, { withCredentials: true });
       if (response.data.success) {
         toast.success(response.data.message);
         dispatch(setIsOtpExpired(false));

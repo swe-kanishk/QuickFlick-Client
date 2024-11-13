@@ -9,7 +9,7 @@ const getAllPosts = () => {
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        const res = await axios.get("https://quickflick-server.onrender.com/api/v1/post/all", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/post/all`, {
           withCredentials: true,
         });
         if (res.data.success) {

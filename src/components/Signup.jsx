@@ -34,7 +34,7 @@ const Signup = () => {
       setLoading(true);
       // Sign up request
       const registerRes = await axios.post(
-        "https://quickflick-server.onrender.com/api/v1/user/register",
+        `${import.meta.env.VITE_API_URL}/api/v1/user/register`,
         input,
         {
           headers: {

@@ -26,7 +26,7 @@ export default function ResetPassword() {
     }
     console.log(token)
     try {
-        const response = await axios.post(`https://quickflick-server.onrender.com/api/v1/user/reset-password/${token}`, {password})
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/reset-password/${token}`, {password})
         if(response.data.success){
             toast.success(response.data.message);
             navigate("/login")

@@ -12,7 +12,7 @@ const getSuggestedUsers = () => {
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
       try {
-        const res = await axios.get("https://quickflick-server.onrender.com/api/v1/user/suggested", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/suggested`, {
           withCredentials: true,
         });
         if (res.data.success) {

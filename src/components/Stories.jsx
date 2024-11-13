@@ -12,7 +12,7 @@ function Stories() {
   return (
     <>
       <div className="flex items-center space-x-4">
-        {storiesUser.map((story) => (
+        {storiesUser?.map((story) => (
           <div className="flex flex-col justify-center items-center gap-[5px]">
           <div
             key={story._id}

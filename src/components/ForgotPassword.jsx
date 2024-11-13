@@ -15,7 +15,7 @@ export default function ForgotPassword() {
     e.preventDefault()
     try {
       const response = await axios.post(
-        `https://quickflick-server.onrender.com/api/v1/user/forgot-password`,
+        `${import.meta.env.VITE_API_URL}/api/v1/user/forgot-password`,
         { email }
       );
       if(response.data.success) {

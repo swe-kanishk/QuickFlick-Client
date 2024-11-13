@@ -77,7 +77,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("https://quickflick-server.onrender.com/api/v1/user/check-auth");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/check-auth`);
         dispatch(setAuthUser(response.data.user));
         dispatch(setTheme(response.data.user.isDark))
       } catch (error) {
@@ -92,7 +92,7 @@ function App() {
   useEffect(() => {
 
     if (user) {
-      const socketio = io("https://quickflick-server.onrender.com", {
+      const socketio = io(import.meta.env.VITE_API_URL, {
         query: { userId: user._id },
         transports: ["websocket"],
       });

@@ -40,7 +40,7 @@ const CommentDialog = ({
     const token = localStorage.getItem("token");
     try {
       const res = await axios.post(
-        `https://quickflick-server.onrender.com/api/v1/post/${selectedPost?._id}/comment`,
+        `${import.meta.env.VITE_API_URL}/api/v1/post/${selectedPost?._id}/comment`,
         { text },
         {
           withCredentials: true,

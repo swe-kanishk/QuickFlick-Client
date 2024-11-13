@@ -32,7 +32,7 @@ function LeftSidebar() {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post("https://quickflick-server.onrender.com/api/v1/user/logout");
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/logout`);
       if (res.data.success) {
         dispatch(setAuthUser(null));
         navigate("/login");

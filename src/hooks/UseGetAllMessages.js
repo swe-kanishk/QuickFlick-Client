@@ -11,7 +11,7 @@ const getAllMessages = () => {
     const fetchAllMessages = async () => {
       try {
         const res = await axios.get(
-          `https://quickflick-server.onrender.com/api/v1/message/all/${selectedUser?._id}`,
+          `${import.meta.env.VITE_API_URL}/api/v1/message/all/${selectedUser?._id}`,
           {
             withCredentials: true,
           }

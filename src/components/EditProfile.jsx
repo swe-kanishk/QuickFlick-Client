@@ -49,7 +49,7 @@ function EditProfile() {
     }
     try {
       setLoading(true);
-      const res = await axios.post('https://quickflick-server.onrender.com/api/v1/user/profile/edit', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/profile/edit`, formData, {
         headers: {
           Authorization: token,
           "Content-Type": 'multipart/form-data'

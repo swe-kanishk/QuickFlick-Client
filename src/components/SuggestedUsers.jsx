@@ -15,7 +15,7 @@ function SuggestedUsers() {
   const handleFollowUnfollow = async (userId) => {
     try {
       const response = await axios.post(
-        `https://quickflick-server.onrender.com/api/v1/user/followorunfollow/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/user/followorunfollow/${userId}`,
         {},
         {
           withCredentials: true,

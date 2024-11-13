@@ -25,7 +25,7 @@ function Home() {
   
   const handleLightAndDarkMode = async() => {
     try {
-      const response = await axios.get(`https://quickflick-server.onrender.com/api/v1/user/update-theme`, { withCredentials: true })
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/update-theme`, { withCredentials: true })
       if(response.data.success){
         toast.success(response.data.message)
         console.log(response.data)

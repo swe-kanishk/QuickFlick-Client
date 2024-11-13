@@ -31,7 +31,7 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "https://quickflick-server.onrender.com/api/v1/user/login",
+        `${import.meta.env.VITE_API_URL}/api/v1/user/login`,
         input,
         {
           headers: { "Content-Type": "application/json" },
@@ -48,6 +48,7 @@ const Login = () => {
     } catch (error) {
       setError(error.response.data.message)
       toast.error(error.response.data.message);
+      console.log(error)
     } finally {
       setLoading(false);
     }
