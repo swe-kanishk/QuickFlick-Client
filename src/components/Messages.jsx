@@ -3,9 +3,9 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import useGetAllMessages from "../hooks/useGetAllMessages";
 import { setMessages } from "@/redux/chatSlice";
 import moment from "moment";
+import useGetAllMessages from "@/hooks/useGetAllMessages";
 
 function Messages({ selectedUser }) {
   useGetAllMessages();
