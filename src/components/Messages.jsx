@@ -5,10 +5,10 @@ import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessages } from "@/redux/chatSlice";
 import moment from "moment";
-import useGetAllMessages from "@/hooks/useGetAllMessages";
+import useFetchAllMessages from "../hooks/useFetchAllMessages.js";
 
 function Messages({ selectedUser }) {
-  useGetAllMessages();
+  useFetchAllMessages();
 
   const { messages } = useSelector((store) => store.chat);
   const { user, isDark } = useSelector(store => store.auth)

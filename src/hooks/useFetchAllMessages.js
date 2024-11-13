@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const useGetAllMessages = () => {
+const useFetchAllMessages = () => {
   const { selectedUser } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
 
@@ -33,4 +33,4 @@ const useGetAllMessages = () => {
   }, [selectedUser, dispatch]);
 };
 
-export default useGetAllMessages;
+export default useFetchAllMessages;
