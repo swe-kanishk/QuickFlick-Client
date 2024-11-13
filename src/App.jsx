@@ -1,5 +1,5 @@
 // Import statements
-import { createBrowserRouter, RouterProvider, Navigate, useNavigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -19,13 +19,15 @@ import ForgotPassword from "./components/ForgotPassword";
 // Redux actions
 import { setSocket } from "./redux/socketSlice.js";
 import { setOnlineUsers } from "./redux/chatSlice.js";
-import { setLikeNotification } from "./redux/realTimeNotificationSlice.js";
-import { setAuthUser } from "./redux/authSlice.js"; // Assuming you have this action for setting auth user
+import { addNotification } from "./redux/realTimeNotificationSlice";
+import { setAuthUser, setTheme } from "./redux/authSlice.js"; // Assuming you have this action for setting auth user
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import VerifyAuthRoute from "./components/VerifyAuthRoute";
 import AuthRoute from "./components/AuthRoute";
 import ResetPassword from "./components/ResetPassword";
 import NotFound from "./components/NotFound";
+import Notifications from "./components/Notifications";
+
 
 axios.defaults.withCredentials = true;
 
@@ -43,6 +45,7 @@ function App() {
         { path: "/profile/:id", element: <Profile /> },
         { path: "/account/edit", element: <EditProfile /> },
         { path: "/chat", element: <ChatPage /> },
+        { path: "/notifications", element: <Notifications /> },
       ],
     },
     {
@@ -76,6 +79,7 @@ function App() {
       try {
         const response = await axios.get("https://quickflick-server.onrender.com/api/v1/user/check-auth");
         dispatch(setAuthUser(response.data.user));
+        dispatch(setTheme(response.data.user.isDark))
       } catch (error) {
         dispatch(setAuthUser(null));
         console.error("Authentication check failed:", error);
@@ -101,7 +105,7 @@ function App() {
 
       socketio.on("notification", (notification) => {
         console.log("new notification", notification);
-        dispatch(setLikeNotification(notification));
+        dispatch(addNotification(notification));
       });
 
       return () => {

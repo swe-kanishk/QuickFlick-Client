@@ -14,6 +14,7 @@ import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
 import moment from "moment";
+import { FaBookmark } from "react-icons/fa";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -142,8 +143,9 @@ function Post({ post }) {
       console.log(error);
     }
   };
+
   return (
-    <div className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${isDark ? 'bg-[#212121] text-white' : 'bg-[#e5e5e5] text-black'} max-w-md mx-auto`}>
+    <div className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${isDark ? 'bg-[#212121] text-white' : 'bg-[#f3f3f3] text-black'} max-w-md mx-auto`}>
       <div className={`flex items-center justify-between`}>
         <div className={`flex items-center gap-3`}>
           <Avatar className={`w-8 h-8 rounded-full overflow-hidden`}>
@@ -232,11 +234,16 @@ function Post({ post }) {
             className={`cursor-pointer hover:text-gray-600`}
           />
         </div>
+        {user?.saved.includes(post._id) ? <FaBookmark
+          size="20px"
+          onClick={savePostHandler}
+          className={`cursor-pointer`}
+        /> :
         <FaRegBookmark
           size="20px"
           onClick={savePostHandler}
           className={`cursor-pointer`}
-        />
+        />}
       </div>
       <span className={`font-medium block mt-1`}>{post.likes.length} likes</span>
       {comments.length > 0 && (
@@ -267,7 +274,7 @@ function Post({ post }) {
           value={text}
           onChange={changeEventHandler}
           placeholder="Add a comment..."
-          className={`outline-none text-sm w-full mt-1 ${isDark ? 'bg-[#212121]' : 'bg-[#e5e5e5]'}`}
+          className={`outline-none text-sm w-full mt-1 ${isDark ? 'bg-[#212121]' : 'bg-[#f3f3f3]'}`}
         />
         {text && (
           <span

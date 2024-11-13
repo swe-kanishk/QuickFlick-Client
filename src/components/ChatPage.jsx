@@ -7,9 +7,10 @@ import { IoMdCloseCircle } from "react-icons/io";
 import Messages from "./Messages";
 import axios from "axios";
 import { markMessagesAsRead, setMessages } from "@/redux/chatSlice";
+import { FaUser } from "react-icons/fa6";
 
 function ChatPage() {
-  const { user, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
+  const { user, isDark, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
@@ -45,9 +46,9 @@ function ChatPage() {
   const { unreadMessages } = useSelector(store => store.chat);
 
   return (
-    <div className="flex h-screen">
+    <div className={`flex ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} pb-[65px] h-screen`}>
       <section className="w-full md:w-1/4 my-8">
-        <h1 className="font-semibold mb-4 px-3 text-xl">{user?.username}</h1>
+        <h1 className="font-semibold mb-4 flex items-center gap-2 px-3 text-xl"><FaUser /> {user?.username}</h1>
         <hr className="mb-4 text-gray-300" />
         <div className="h-[80vh] overflow-y-auto">
           {suggestedUsers.map((suggestedUser) => {
@@ -60,10 +61,10 @@ function ChatPage() {
                   dispatch(setSelectedUser(suggestedUser))
                   dispatch(markMessagesAsRead({userId: suggestedUser?._id}))
                 }}
-                className="flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer"
+                className={`flex gap-3 items-center p-3 ${!isDark ? 'hover:bg-gray-50' : 'hover:bg-[#000000]'} cursor-pointer`}
               >
-                <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
-                  <AvatarImage src={suggestedUser?.avatar} alt="user-avatar" />
+                <Avatar className="w-[4rem] h-[4rem] rounded-full aspect-square object-cover overflow-hidden">
+                  <AvatarImage src={suggestedUser?.avatar} className="aspect-square object-cover" alt="user-avatar" />
                   <AvatarFallback>
                     <img
                       src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
@@ -88,8 +89,8 @@ function ChatPage() {
         </div>
       </section>
       {selectedUser ? (
-        <section className="flex-1 border-l flex flex-col border-gray-300 h-full">
-          <div className="flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white">
+        <section className={`flex-1 w-full pb-[60px] absolute border-l ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} flex flex-col border-gray-300 h-full`}>
+          <div className={`flex gap-3 items-center px-3 py-3 border-b border-gray-300 sticky top-0 ${isDark ? 'bg-black' : 'bg-white'}`}>
             <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
               <AvatarImage
                 src={selectedUser?.avatar}
@@ -104,10 +105,10 @@ function ChatPage() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 flex items-center justify-between">
-              <span>{selectedUser?.username}</span>
+              <span className={`${isDark ? 'text-white' : 'text-black'}`}>{selectedUser?.username}</span>
               <IoMdCloseCircle
                 size={"30px"}
-                className="cursor-pointer text-red-600 hover:text-gray-500"
+                className="cursor-pointer text-red-500 hover:text-gray-500"
                 onClick={() => dispatch(setSelectedUser(null))}
               />
             </div>
@@ -119,7 +120,7 @@ function ChatPage() {
               onChange={(e) => setTextMessage(e.target.value)}
               type="text"
               placeholder="Message..."
-              className="flex-1 mr-2 focus-visible:ring-transparent outline-none"
+              className={`flex-1 mr-2 focus-visible:ring-transparent ${isDark ? 'bg-[#151515]' : 'bg-white'} outline-none`}
             />
             <button onClick={() => sendMessageHandler(selectedUser?._id)}>
               Send
@@ -127,7 +128,7 @@ function ChatPage() {
           </div>
         </section>
       ) : (
-        <section className="flex flex-col items-center justify-center mx-auto flex-1 border-l border-gray-300 h-full">
+        <section className="md:flex hidden flex-col items-center justify-center mx-auto flex-1 border-l border-gray-300 h-full">
           <MessageCircleCode className="w-32 h-32 my-4 text-gray-700" />
           <h1 className="text-2xl text-gray-700 font-semibold">
             Your messages

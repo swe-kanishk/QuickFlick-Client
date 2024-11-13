@@ -3,24 +3,34 @@ import { createSlice } from "@reduxjs/toolkit";
 const realTimeNotificationSlice = createSlice({
   name: "realTimeNotification",
   initialState: {
-    likeNotification: [],
-    notificationUnreadCount: 0,
+    allNotifications: [],         // Stores all fetched notifications
+    realTimeNotifications: [],     // Stores real-time notifications after the last read
+    unreadCount: 0,                // Tracks unread notifications count
   },
   reducers: {
-    setLikeNotification: (state, action) => {
-      state.likeNotification = state.likeNotification || [];
-      if (action.payload.type === "like") {
-        state.likeNotification.unshift(action.payload);
-        state.notificationUnreadCount += 1;
-      } else if (action.payload.type === "dislike") {
-        state.likeNotification = state.likeNotification.filter((item) => item.userId !== action.payload.userId || item.postId !== action.payload.postId);
-      }
+    addNotification: (state, action) => {
+      const newNotification = action.payload;
+      
+      // Add to real-time notifications and increment count if unread
+      state.realTimeNotifications.unshift(newNotification);
+      state.unreadCount += 1;
     },
-    resetNotificationUnreadCount: (state) => {
-      state.notificationUnreadCount = 0;
+    setAllNotifications: (state, action) => {
+      // Set all notifications from a fetched array (e.g., from backend)
+      state.allNotifications = action.payload;
+      state.realTimeNotifications = [];
+      state.unreadCount = 0;
+    },
+    allRead: (state) => {
+      // Mark all notifications as read
+      state.allNotifications.forEach((notif) => (notif.isRead = true));
+
+      // Clear real-time notifications and reset count
+      state.realTimeNotifications = [];
+      state.unreadCount = 0;
     },
   },
 });
 
-export const { setLikeNotification, resetNotificationUnreadCount } = realTimeNotificationSlice.actions;
+export const { addNotification, setAllNotifications, allRead } = realTimeNotificationSlice.actions;
 export default realTimeNotificationSlice.reducer;

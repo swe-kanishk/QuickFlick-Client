@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Feed from './Feed'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import RightSidebar from './RightSidebar'
 import getAllPosts from '@/hooks/useGetAllPosts'
 import getSuggestedUsers from '@/hooks/useGetSuggestedUsers'
@@ -21,6 +21,7 @@ function Home() {
   const [story, setViewStory] = useState(false);
   const { user, isDark } = useSelector(store => store.auth)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   
   const handleLightAndDarkMode = async() => {
     try {
@@ -34,8 +35,14 @@ function Home() {
       console.log(error)
     }
   }
+
+  const { unreadMessages } = useSelector((store) => store.chat);
+  const unreadUsers =
+    unreadMessages &&
+   Object.keys(unreadMessages).filter((userId) => unreadMessages[userId] > 0);
+
   return (
-    <div  className={`flex flex-col ${isDark ? 'bg-[#151515]' : 'bg-white'} h-screen overflow-scroll`}>
+    <div  className={`flex flex-col ${isDark ? 'bg-[#151515]' : 'bg-white'} h-screen pb-[70px] overflow-scroll`}>
       <div className={`flex fixed items-center top-0 z-50 right-0 w-full px-3 py-4 justify-between md:hidden ${isDark ? 'bg-[#151515]' : 'bg-white'}`}>
         <div className='flex gap-2 items-start'>
           <div className='h-12 w-12 rounded-full relative'>
@@ -47,11 +54,18 @@ function Home() {
             <span className={`text-[15px] ${isDark ? 'text-white' : 'text-black'}`}>welcome to <span className='font-semibold'>QuickFlick</span> 👋🏼</span>
           </div>
         </div>
-        <div className='flex justify-center gap-5 items-center'>
-          <HiMiniPaperAirplane className={`cursor-pointer rotate-[-50deg] ${isDark ? 'text-white' : 'text-black'} w-5 h-5`} />
+        <div className='flex relative justify-center gap-5 items-center'>
+          <HiMiniPaperAirplane onClick={() => navigate('/chat')} className={`cursor-pointer rotate-[-50deg] ${isDark ? 'text-white' : 'text-black'} w-5 h-5`} />
           {
             isDark ? <MdLightMode  onClick={handleLightAndDarkMode} className={`${isDark ? 'text-white' : 'text-black'} w-5 h-5 cursor-pointer relative top-[2px]`} /> : <HiMoon onClick={handleLightAndDarkMode} className={`${isDark ? 'text-white' : 'text-black'} relative top-[1px] cursor-pointer w-5 h-5`} />
           }
+          {
+            unreadUsers.length ? <> <span className='bg-red-500 h-2 w-2 absolute left-[-3px] bottom-[-5px] rounded-full'></span> </> : ''
+          }
+          {
+            unreadUsers.length ? <span className={`${isDark ? 'text-black bg-white' : 'text-white bg-black'} absolute left-3 z-10 bottom-3 w-4 h-4 flex text-[12px] font-semibold items-center justify-center p-1 rounded-full`}>{unreadUsers.length}</span> : ''
+          }
+          
         </div>
       </div>
       <div className="flex-1 md:mt-0 mt-[90px] px-3 w-full overflow-x-scroll flex flex-col justify-start border-r border-gray-300">
