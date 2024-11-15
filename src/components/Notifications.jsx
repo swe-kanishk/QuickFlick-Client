@@ -49,7 +49,7 @@ function Notifications() {
       {Notifications &&
         Notifications?.map((notification) => {
           return (
-            <div className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
+            <div key={notification._id} className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
                 
               <div className="flex gap-3 items-center">
                 <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">

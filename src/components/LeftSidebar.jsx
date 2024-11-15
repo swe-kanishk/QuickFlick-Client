@@ -23,7 +23,7 @@ function LeftSidebar() {
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { user, isDark } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.auth);
   const { unreadCount } = useSelector((store) => store.realTimeNotification);
   const [active, setActive] = useState("Home");
 
@@ -55,14 +55,14 @@ function LeftSidebar() {
         <Avatar className="w-8 h-8">
           <AvatarImage
             src={user?.avatar}
-            className="rounded-full overflow-hidden aspect-square object-cover"
+            className='h-8 w-8 rounded-full overflow-hidden object-cover'
             alt="@shadcn"
           />
           <AvatarFallback>
             <img
               src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
               alt=""
-              className="h-20 w-20 rounded-full overflow-hidden aspect-square object-cover"
+              className='h-8 w-8 rounded-full overflow-hidden object-cover'
             />
           </AvatarFallback>
         </Avatar>

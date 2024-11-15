@@ -10,7 +10,6 @@ function ViewStory({ user, setViewStory }) {
     const getUserStories = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/stories/${user}`, { withCredentials: true });
-            console.log(response)
             return response.data.stories;
         } catch (error) {
             console.error("Error fetching stories:", error);

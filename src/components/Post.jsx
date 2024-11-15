@@ -15,6 +15,7 @@ import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
 import moment from "moment";
 import { FaBookmark } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -147,7 +148,7 @@ function Post({ post }) {
   return (
     <div className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${isDark ? 'bg-[#212121] text-white' : 'bg-[#f3f3f3] text-black'} max-w-md mx-auto`}>
       <div className={`flex items-center justify-between`}>
-        <div className={`flex items-center gap-3`}>
+        <Link to={`/profile/${post?.author._id}`} className={`flex items-center gap-3`}>
           <Avatar className={`w-8 h-8 rounded-full overflow-hidden`}>
             <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
             <AvatarFallback>
@@ -168,7 +169,7 @@ function Post({ post }) {
               </span>
             )}
           </div>
-        </div>
+        </Link>
         <Dialog>
           <DialogTrigger asChild>
             <MoreHorizontal className={`cursor-pointer`} />

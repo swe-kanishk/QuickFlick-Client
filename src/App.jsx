@@ -1,5 +1,5 @@
 // Import statements
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -28,18 +28,40 @@ import ResetPassword from "./components/ResetPassword";
 import NotFound from "./components/NotFound";
 import Notifications from "./components/Notifications";
 
-
 axios.defaults.withCredentials = true;
 
 function App() {
   const { user } = useSelector((store) => store.auth);
   const { socket } = useSelector((store) => store.socketio);
   const dispatch = useDispatch();
-  
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/v1/user/check-auth`
+        );
+        if (response.data.success) {
+          dispatch(setAuthUser(response.data.user));
+          dispatch(setTheme(response.data.user.isDark));
+        }
+      } catch (error) {
+        dispatch(setAuthUser(null));
+        console.error("Authentication check failed:", error);
+      }
+    };
+
+    checkAuth();
+  }, [dispatch]);
+
   const ProtectedBrowserRouter = createBrowserRouter([
     {
       path: "/",
-      element: <ProtectedRoutes><MainLayout /></ProtectedRoutes>,
+      element: (
+        <ProtectedRoutes>
+          <MainLayout />
+        </ProtectedRoutes>
+      ),
       children: [
         { path: "/", element: <Home /> },
         { path: "/profile/:id", element: <Profile /> },
@@ -50,47 +72,31 @@ function App() {
     },
     {
       path: "/signup",
-      element: <AuthRoute element={<Signup />} />
+      element: <AuthRoute element={<Signup />} />,
     },
     {
       path: "/login",
-      element: <AuthRoute element={<Login />} />
+      element: <AuthRoute element={<Login />} />,
     },
     {
       path: "/verify-auth",
-      element: <VerifyAuthRoute element={<EmailVerification />} />
+      element: <VerifyAuthRoute element={<EmailVerification />} />,
     },
     {
       path: "/forgot-password",
-      element: <AuthRoute element={<ForgotPassword />} />
+      element: <AuthRoute element={<ForgotPassword />} />,
     },
     {
       path: "/reset-password/:token",
-      element: <AuthRoute element={<ResetPassword />} />
+      element: <AuthRoute element={<ResetPassword />} />,
     },
     {
       path: "*",
-      element: <NotFound />
-    }
+      element: <NotFound />,
+    },
   ]);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/check-auth`);
-        dispatch(setAuthUser(response.data.user));
-        dispatch(setTheme(response.data.user.isDark))
-      } catch (error) {
-        dispatch(setAuthUser(null));
-        console.error("Authentication check failed:", error);
-      }
-    };
-
-    checkAuth();
-  }, [dispatch]);
-
-  useEffect(() => {
-
     if (user) {
       const socketio = io(import.meta.env.VITE_API_URL, {
         query: { userId: user._id },
@@ -117,8 +123,6 @@ function App() {
       dispatch(setSocket(null));
     }
   }, [user, dispatch]);
-
-  console.log(user, "chalao dada")
 
   return <RouterProvider router={ProtectedBrowserRouter} />;
 }

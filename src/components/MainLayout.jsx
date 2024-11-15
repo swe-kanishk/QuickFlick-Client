@@ -4,7 +4,7 @@ import LeftSidebar from './LeftSidebar'
 
 function MainLayout() {
   return (
-    <div className='flex'>
+    <div className='flex flex-col'>
         <LeftSidebar />
         <div className='max-h-[calc(100vh-60px)] flex-1 overflow-hidden'>
           <Outlet />
