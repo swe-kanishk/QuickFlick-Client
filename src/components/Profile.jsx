@@ -9,7 +9,7 @@ import React, {
   Suspense,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TbSettingsFilled } from "react-icons/tb";
 import { IoCameraOutline } from "react-icons/io5";
 import { IoMdGrid } from "react-icons/io";
@@ -18,7 +18,10 @@ import { LuContact2 } from "react-icons/lu";
 import { FaRegBookmark } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { FaComment, FaUser } from "react-icons/fa6";
-import { setUserProfile } from "@/redux/authSlice";
+import { setAuthUser, setUserProfile } from "@/redux/authSlice";
+import { ImExit } from "react-icons/im";
+import { toast } from "sonner";
+import axios from "axios";
 
 // Lazy load CreatePost component
 const CreatePost = lazy(() => import("./CreatePost"));
@@ -30,6 +33,7 @@ const Profile = React.memo(() => {
   const userId = params.id;
   getUserProfile(userId);
   const { userProfile, user, isDark } = useSelector((store) => store.auth);
+  const navigate = useNavigate()
 
   const isLoggedInUSerProfile = useMemo(
     () => userProfile?._id === user?._id,
@@ -48,13 +52,30 @@ const Profile = React.memo(() => {
     };
   }, [dispatch]);
 
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/logout`);
+      if (res.data.success) {
+        dispatch(setAuthUser(null));
+        navigate("/login");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <div className={`flex flex-col max-w-5xl h-screen mx-auto items-start ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} justify-start px-5 md:px-0 py-3`}>
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="md:grid flex-col w-full md:grid-cols-2 flex">
-          <span className="font-bold flex items-center gap-2 mb-5 text-lg mr-4">
+          <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg mr-4">
+            <div className="flex items-center gap-2">
             <FaUser />
             {userProfile?.username}
+            </div>
+            <ImExit onClick={() => logoutHandler()} className="cursor-pointer" />
           </span>
           <section className="flex items-center justify-start gap-8 md:justify-center">
             <Avatar className="min-w-[5rem] min-h-[5rem] rounded-full aspect-square object-cover overflow-hidden">

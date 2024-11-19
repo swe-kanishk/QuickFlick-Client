@@ -105,7 +105,7 @@ function LeftSidebar() {
 
   return (
     <>
-      <div className="flex fixed md:relative bottom-0 md:bg-white h-[60px] bg-pink-400 md:overflow-hidden justify-between md:justify-start md:py-8 z-50 flex-row md:flex-col md:h-screen md:min-w-[250px] w-full md:max-w-[300px] border-r border-1">
+      <div className="flex z-[100] md:z-50 fixed md:relative bottom-0 md:bg-white h-[60px] bg-pink-400 md:overflow-hidden justify-between md:justify-start md:py-8 flex-row md:flex-col md:h-screen md:min-w-[250px] w-full md:max-w-[300px] border-r border-1">
         <div className="px-10 hidden md:flex">
           <Logo />
         </div>

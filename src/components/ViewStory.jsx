@@ -9,8 +9,10 @@ function ViewStory({ user, setViewStory }) {
 
     const getUserStories = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/stories/${user}`, { withCredentials: true });
-            return response.data.stories;
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/stories/${user._id}`, { withCredentials: true });
+            if(response.data.success) {
+                return response.data.stories;
+            }
         } catch (error) {
             console.error("Error fetching stories:", error);
             return [];

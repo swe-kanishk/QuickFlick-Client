@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { Loader, Loader2, Lock, Mail } from "lucide-react";
 import Logo from "./Logo";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthUser } from "@/redux/authSlice";
+import { setAuthUser, setTheme } from "@/redux/authSlice";
+
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,7 @@ const Login = () => {
       if (res.data.success) {
         setInput(input.email = "", input.password = "")
         dispatch(setAuthUser(res.data.user));
+        dispatch(setTheme(res.data.user.isDark))
         toast.success(res.data.message);
         setInput({ email: "", password: "" });
         navigate("/"); // Redirect after setting the user in Redux

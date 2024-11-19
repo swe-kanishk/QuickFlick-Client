@@ -70,18 +70,46 @@ const CommentDialog = ({
     <Dialog open={open}>
       <DialogContent
         onInteractOutside={() => setOpen(false)}
-        className="max-w-5xl h-[75%] p-0 flex flex-col rounded-l-lg overflow-hidden"
+        className="max-w-5xl md:h-[75%] h-full p-0 flex flex-col rounded-l-lg overflow-hidden"
       >
-        <div className="flex flex-1 border-r border-gray-300 overflow-y-scroll">
-          <div className="w-3/5 bg-red-300">
+        <div className="flex flex-1 md:border-r border-gray-300 flex-col md:flex-row overflow-y-scroll">
+        <div className="flex md:hidden items-center justify-between p-4 md:border-b border-gray-300">
+              <div className="flex gap-3 items-center">
+                <Link>
+                  <Avatar>
+                    <AvatarImage src={selectedPost?.author.avatar} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div>
+                  <Link className="font-semibold text-xs">
+                    {selectedPost?.author.username}
+                  </Link>
+                </div>
+              </div>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <MoreHorizontal className="cursor-pointer" />
+                </DialogTrigger>
+                <DialogContent className="flex flex-col items-center text-sm text-center">
+                  <div className="cursor-pointer w-full text-[#ED4956] font-bold">
+                    Unfollow
+                  </div>
+                  <div className="cursor-pointer w-full">Add to favorites</div>
+                  <div className="cursor-pointer w-full font-semibold text-red-500" onClick={() => setOpen(false)}>Close</div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          <div className="md:w-3/5 flex items-center justify-center h-[50%] md:h-full object-cover w-full">
             <img
               src={selectedPost?.image}
               alt="post_img"
               className="w-auto h-full object-center object-cover"
             />
           </div>
-          <div className="w-[55%] flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-gray-300">
+          <div className="md:w-[55%] w-full h-full flex flex-col">
+            <div className="md:flex hidden items-center justify-between p-4 md:border-b border-gray-300">
               <div className="flex gap-3 items-center">
                 <Link>
                   <Avatar>
@@ -108,12 +136,12 @@ const CommentDialog = ({
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="w-full p-4 border-b h-[75%] items-start border-gray-300 overflow-scroll">
+            <div className="w-full p-4 flex flex-col border-b md:h-[75%] flex-1 items-start border-gray-300 overflow-scroll">
               {comments?.map((comment) => (
                 <Comment key={comment._id} comment={comment} />
               ))}
             </div>
-            <div className="py-4">
+            <div className="py-4 pb-[80px] md:pb-4">
               <div className="flex justify-between pr-3 border-b border-gray-300">
                 <div className="flex gap-4 pb-4 pl-3">
                   {liked ? (
