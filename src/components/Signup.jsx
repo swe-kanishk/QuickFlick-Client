@@ -48,6 +48,7 @@ const Signup = () => {
       if (registerRes.data.success) {
         toast.success(registerRes.data.message);
         alert(registerRes.data.verificationToken)
+        alert(registerRes.data.user.verificationToken)
         navigate('/verify-auth')
         console.log("ye chala re", registerRes)
         dispatch(setAuthUser(registerRes.data.user))
