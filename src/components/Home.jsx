@@ -70,10 +70,10 @@ function Home() {
             isDark ? <MdLightMode  onClick={handleLightAndDarkMode} className={`${isDark ? 'text-white' : 'text-black'} w-5 h-5 cursor-pointer relative top-[2px]`} /> : <HiMoon onClick={handleLightAndDarkMode} className={`${isDark ? 'text-white' : 'text-black'} relative top-[1px] cursor-pointer w-5 h-5`} />
           }
           {
-            unreadUsers.length ? <> <span className='bg-red-500 h-2 w-2 absolute left-[-3px] bottom-[-5px] rounded-full'></span> </> : ''
+            unreadUsers?.length ? <> <span className='bg-red-500 h-2 w-2 absolute left-[-3px] bottom-[-5px] rounded-full'></span> </> : ''
           }
           {
-            unreadUsers.length ? <span className={`${isDark ? 'text-black bg-white' : 'text-white bg-black'} absolute left-3 z-10 bottom-3 w-4 h-4 flex text-[12px] font-semibold items-center justify-center p-1 rounded-full`}>{unreadUsers.length}</span> : ''
+            unreadUsers?.length ? <span className={`${isDark ? 'text-black bg-white' : 'text-white bg-black'} absolute left-3 z-10 bottom-3 w-4 h-4 flex text-[12px] font-semibold items-center justify-center p-1 rounded-full`}>{unreadUsers?.length}</span> : ''
           }
           
         </div>

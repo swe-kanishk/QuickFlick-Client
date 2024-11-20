@@ -8,7 +8,7 @@ function Stories() {
   const [viewStory, setViewStory] = useState(null); // Change to null to store the story to view
 
   const { user, isDark } = useSelector((store) => store.auth);
-  const storiesUser = user?.following?.filter((followingPeople) => followingPeople.stories.length ? followingPeople._id : null)
+  const storiesUser = user?.following?.filter((followingPeople) => followingPeople?.stories?.length ? followingPeople._id : null)
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -27,7 +27,7 @@ function Stories() {
               />
             </div>
           </div>
-          <div className={`flex flex-col text-[12px] items-center gap-[5px] ${isDark ? 'text-white' : 'text-black'}`}><span>{story.username}</span></div>
+          <div className={`flex flex-col text-[12px] items-center gap-[5px] ${isDark ? 'text-white' : 'text-black'}`}><span>{story?.username}</span></div>
 
             </div>
         ))}
