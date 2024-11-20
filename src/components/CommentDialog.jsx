@@ -21,6 +21,7 @@ const CommentDialog = ({
 }) => {
   const dispatch = useDispatch();
   const { selectedPost, posts } = useSelector((store) => store.post);
+  const { user, isDark } = useSelector((store) => store.auth);
   const [text, setText] = useState("");
   const [comments, setComments] = useState([]);
 
@@ -70,7 +71,7 @@ const CommentDialog = ({
     <Dialog open={open}>
       <DialogContent
         onInteractOutside={() => setOpen(false)}
-        className="max-w-5xl md:h-[75%] h-full p-0 flex flex-col rounded-l-lg overflow-hidden"
+        className={`max-w-5xl md:h-[75%] h-full p-0 flex flex-col rounded-l-lg overflow-hidden ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}
       >
         <div className="flex flex-1 md:border-r border-gray-300 flex-col md:flex-row overflow-y-scroll">
         <div className="flex md:hidden items-center justify-between p-4 md:border-b border-gray-300">
@@ -176,7 +177,7 @@ const CommentDialog = ({
                   value={text}
                   onChange={eventHandler}
                   placeholder="Add a comment..."
-                  className="w-full outline-none border-none text-sm border-gray-300 p-2 rounded"
+                  className={`w-full outline-none border-none text-sm border-gray-300 p-2 rounded ${isDark ? 'bg-[#151515]' : 'bg-white'}`}
                 />
                 <button
                   disabled={!text.trim()}

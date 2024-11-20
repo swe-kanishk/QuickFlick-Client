@@ -2,10 +2,13 @@ import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import React from "react";
 import { AvatarImage } from "./ui/avatar";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 function Comment({ comment }) {
+  const {isDark} = useSelector(store => store.auth)
+
   return (
-    <div className="flex my-2 bg-gray-200 py-1 px-2 rounded-lg items-start w-full gap-2">
+    <div className={`flex my-2 py-1 px-2 rounded-lg items-start w-full gap-2 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
       <Avatar>
         <AvatarImage
           className="h-10 w-10 rounded-full object-cover aspect-square"

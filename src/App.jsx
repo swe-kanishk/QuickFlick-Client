@@ -18,7 +18,7 @@ import ForgotPassword from "./components/ForgotPassword";
 
 // Redux actions
 import { setSocket } from "./redux/socketSlice.js";
-import { setOnlineUsers } from "./redux/chatSlice.js";
+import { addUnreadMessage, setMessages, setOnlineUsers } from "./redux/chatSlice.js";
 import { addNotification } from "./redux/realTimeNotificationSlice";
 import { setAuthUser, setTheme } from "./redux/authSlice.js"; // Assuming you have this action for setting auth user
 import ProtectedRoutes from "./components/ProtectedRoutes";
@@ -33,6 +33,8 @@ axios.defaults.withCredentials = true;
 function App() {
   const { user } = useSelector((store) => store.auth);
   const { socket } = useSelector((store) => store.socketio);
+  const {messages} = useSelector(store => store.chat)
+  const { selectedUser } = useSelector(store => store.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -113,6 +115,18 @@ function App() {
         console.log("new notification", notification);
         dispatch(addNotification(notification));
       });
+
+      socketio.on('newMessage', (newMessage) => {
+        const { senderId, receiverId } = newMessage;
+        console.log('messages', messages)
+        console.log('newMessages', newMessage)
+        if (selectedUser && senderId === selectedUser?._id) {
+          dispatch(setMessages([...messages, newMessage]))
+        }
+        else {
+          dispatch(addUnreadMessage({ userId: senderId }));
+        }
+      })
 
       return () => {
         socketio.close();

@@ -16,10 +16,8 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
-import useGetRealTimeMessages from "@/hooks/useGetRealTimeMessages";
 
 function LeftSidebar() {
-  useGetRealTimeMessages();
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();

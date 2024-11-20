@@ -18,6 +18,9 @@ function Notifications() {
   const { allNotifications, realTimeNotifications } = useSelector(
     (store) => store.realTimeNotification
   );
+  const { isDark } = useSelector(
+    (store) => store.auth
+  );
 
   const Notifications = allNotifications?.concat(realTimeNotifications);
 
@@ -42,19 +45,19 @@ function Notifications() {
   })();
 
   return (
-    <div className="p-3 flex flex-col gap-3">
+    <div className={`p-3 flex h-screen flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
         <div className="border-b border-gray-200">
             <p className="text-xl my-3 font-semibold flex items-center gap-2"><FaRegBell className="rotate-[-30deg] font-semibold" /> Notifications </p>
         </div>
       {Notifications &&
         Notifications?.map((notification) => {
           return (
-            <div key={notification._id} className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
+            <div key={notification?._id} className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
                 
               <div className="flex gap-3 items-center">
                 <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
                   <AvatarImage
-                    src={notification?.sender.avatar}
+                    src={notification?.sender?.avatar}
                     className="w-[4rem] h-[4rem] rounded-full object-cover aspect-square overflow-hidden"
                     alt="user-avatar"
                   />
@@ -68,32 +71,32 @@ function Notifications() {
                 </Avatar>
                 <div className="flex flex-col justify-center">
                   <span className="font-semibold text-sm">
-                    {notification?.sender.username}
+                    {notification?.sender?.username}
                   </span>
-                  <p>{notification.message}</p>
+                  <p>{notification?.message}</p>
                 </div>
             </div>
                 <div className="flex gap-[5px] justify-center items-center">
                 <div className="flex gap-[3px] flex-col justify-center items-center">
-                {notification.postId.image && (
-                  <Avatar className="w-[3rem] rounded-lg h-[3rem] rounded-lg overflow-hidden">
+                {notification?.postId?.image && (
+                  <Avatar className="w-[3rem]  h-[3rem] rounded-lg overflow-hidden">
                     <AvatarImage
                       src={notification?.postId?.image[0]}
-                      className="w-[3rem] rounded-lg h-[3rem] rounded-lg object-cover aspect-square overflow-hidden"
+                      className="w-[3rem] h-[3rem] rounded-lg object-cover aspect-square overflow-hidden"
                       alt="user-avatar"
                     />
                     <AvatarFallback>
                       <img
                         src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
                         alt=""
-                        className="w-[3rem] rounded-lg h-[3rem] rounded-lg object-cover aspect-square overflow-hidden"
+                        className="w-[3rem] h-[3rem] rounded-lg object-cover aspect-square overflow-hidden"
                       />
                     </AvatarFallback>
                   </Avatar>
                 )}
-                <p className="text-[12px]">{moment(notification.createdAt).fromNow()}</p>
+                <p className="text-[12px]">{moment(notification?.createdAt).fromNow()}</p>
                 </div>
-                {notification.isRead && (
+                {notification?.isRead && (
                   <span className="h-3 w-3 right-0 rounded-full bg-blue-700"></span>
                 )}
                 </div>

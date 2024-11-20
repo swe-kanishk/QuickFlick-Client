@@ -70,12 +70,12 @@ const Profile = React.memo(() => {
     <div className={`flex flex-col max-w-5xl h-screen mx-auto items-start ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} justify-start px-5 md:px-0 py-3`}>
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="md:grid flex-col w-full md:grid-cols-2 flex">
-          <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg mr-4">
+          <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg ">
             <div className="flex items-center gap-2">
             <FaUser />
             {userProfile?.username}
             </div>
-            <ImExit onClick={() => logoutHandler()} className="cursor-pointer" />
+            <ImExit onClick={() => logoutHandler()} className="cursor-pointer h-5 w-5 text-blue-500" />
           </span>
           <section className="flex items-center justify-start gap-8 md:justify-center">
             <Avatar className="min-w-[5rem] min-h-[5rem] rounded-full aspect-square object-cover overflow-hidden">
