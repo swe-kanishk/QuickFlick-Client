@@ -8,14 +8,14 @@ function Stories() {
   const [viewStory, setViewStory] = useState(null); // Change to null to store the story to view
 
   const { user, isDark } = useSelector((store) => store.auth);
-  const storiesUser = user?.following.filter((follower) => follower.stories)
+  const storiesUser = user?.following?.filter((followingPeople) => followingPeople.stories.length ? followingPeople._id : null)
   return (
     <>
       <div className="flex items-center space-x-4">
         {storiesUser?.map((story) => (
           <div className="flex flex-col justify-center items-center gap-[5px]">
           <div
-            key={story._id}
+            key={story?._id}
             onClick={() => setViewStory(story)}
             className="w-14 h-14 bg-pink-500 cursor-pointer flex items-center justify-center rounded-full"
           >
@@ -33,7 +33,7 @@ function Stories() {
         ))}
       </div>
       {viewStory && (
-        <ViewStory user={viewStory._id} setViewStory={setViewStory} />
+        <ViewStory user={viewStory} setViewStory={setViewStory} />
       )}
     </>
   );

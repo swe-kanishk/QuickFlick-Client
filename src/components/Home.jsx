@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Feed from './Feed'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import RightSidebar from './RightSidebar'
 import getAllPosts from '@/hooks/useGetAllPosts'
 import getSuggestedUsers from '@/hooks/useGetSuggestedUsers'
@@ -45,7 +45,7 @@ function Home() {
   return (
     <div  className={`flex flex-col ${isDark ? 'bg-[#151515]' : 'bg-white'} h-screen pb-[70px] overflow-scroll`}>
       <div className={`flex fixed items-center top-0 z-50 right-0 w-full px-3 py-4 justify-between md:hidden ${isDark ? 'bg-[#151515]' : 'bg-white'}`}>
-        <div className='flex gap-2 items-start'>
+        <Link to={`/profile/${user._id}`} className='flex gap-2 items-start'>
           <div className='h-12 w-12 rounded-full relative'>
             <Avatar>
               <AvatarImage className='h-12 w-12 rounded-full overflow-hidden object-cover' src={user?.avatar} alt="img" />
@@ -63,7 +63,7 @@ function Home() {
             <p className={`text-[12px] font-medium ${isDark ? 'text-yellow-400' : 'text-blue-600'}`}>Hello, {user?.username || 'unknown!'}</p>
             <span className={`text-[15px] ${isDark ? 'text-white' : 'text-black'}`}>welcome to <span className='font-semibold'>QuickFlick</span> 👋🏼</span>
           </div>
-        </div>
+        </Link>
         <div className='flex relative justify-center gap-5 items-center'>
           <HiMiniPaperAirplane onClick={() => navigate('/chat')} className={`cursor-pointer rotate-[-50deg] ${isDark ? 'text-white' : 'text-black'} w-5 h-5`} />
           {

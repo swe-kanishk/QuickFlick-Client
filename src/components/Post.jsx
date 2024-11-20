@@ -16,6 +16,7 @@ import { IoMdHeart } from "react-icons/io";
 import moment from "moment";
 import { FaBookmark } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { setAuthUser } from "@/redux/authSlice";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -28,7 +29,6 @@ function Post({ post }) {
   const [postlikes, setPostLikes] = useState(post?.likes.length);
   const [comments, setComments] = useState(post?.comments);
 
-
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
     if (inputText.trim()) {
@@ -38,9 +38,10 @@ function Post({ post }) {
 
   useEffect(() => {
     return () => {
-      dispatch(setSelectedPost(null))
-    }
-  },[])
+      dispatch(setSelectedPost(null));
+    };
+  }, []);
+
   const likeOrDislikeHandler = async () => {
     try {
       const action = liked ? "dislike" : "like";
@@ -106,6 +107,30 @@ function Post({ post }) {
     }
   };
 
+  const handleFollowUnfollow = async (userId) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/followorunfollow/${userId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+  
+      if (response.data.success) {
+        toast.success(response.data.message);
+  
+        const isFollowing = response.data.isFollowing;
+        // Dispatch the updated user to Redux
+        dispatch(setAuthUser(response.data.user));
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+
   const deletePostHandler = async () => {
     try {
       const res = await axios.delete(
@@ -146,9 +171,16 @@ function Post({ post }) {
   };
 
   return (
-    <div className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${isDark ? 'bg-[#212121] text-white' : 'bg-[#f3f3f3] text-black'} max-w-md mx-auto`}>
+    <div
+      className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${
+        isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
+      } max-w-md mx-auto`}
+    >
       <div className={`flex items-center justify-between`}>
-        <Link to={`/profile/${post?.author._id}`} className={`flex items-center gap-3`}>
+        <Link
+          to={`/profile/${post?.author._id}`}
+          className={`flex items-center gap-3`}
+        >
           <Avatar className={`w-8 h-8 rounded-full overflow-hidden`}>
             <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
             <AvatarFallback>
@@ -160,11 +192,17 @@ function Post({ post }) {
           </Avatar>
           <div className={`flex items-center`}>
             <div className="flex flex-col justify-center">
-            <h1>{post?.author?.username}</h1>
-            <span className="text-[12px] text-gray-400">Posted {moment(post.createdAt).fromNow()}.</span>
+              <h1>{post?.author?.username}</h1>
+              <span className="text-[12px] text-gray-400">
+                Posted {moment(post.createdAt).fromNow()}.
+              </span>
             </div>
             {post?.author?._id === user?._id && (
-              <span className={`text-xs ml-5 px-2 py-1 ${isDark ? 'bg-gray-100 text-black' : 'bg-gray-700 text-white'} font-medium rounded-sm`}>
+              <span
+                className={`text-xs ml-5 px-2 py-1 ${
+                  isDark ? "bg-gray-100 text-black" : "bg-gray-700 text-white"
+                } font-medium rounded-sm`}
+              >
                 Author
               </span>
             )}
@@ -174,15 +212,23 @@ function Post({ post }) {
           <DialogTrigger asChild>
             <MoreHorizontal className={`cursor-pointer`} />
           </DialogTrigger>
-          <DialogContent className={`grid text-sm place-items-center text-center px-3 py-2 rounded-md bg-white`}>
-            {post?.author._id !== user?._id && (
-              <Button
-                variant="ghost"
-                className={`cursor-pointer border-none outline-none w-full font-bold`}
-              >
-                Unfollow
-              </Button>
-            )}
+          <DialogContent
+            className={`grid text-sm place-items-center text-center px-3 py-2 rounded-md bg-white`}
+          >
+            {post?.author._id !== user?._id &&
+              (user?.following?.includes(post?.author?._id) ? (
+                <Button
+                  variant="ghost"
+                  className={`cursor-pointer border-none outline-none w-full font-bold`}
+                  onClick={() => handleFollowUnfollow(post?.author?._id)}
+                >Unfollow</Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  className={`cursor-pointer border-none outline-none w-full font-bold`}
+                  onClick={() => handleFollowUnfollow(post?.author?._id)}
+                >Follow</Button>
+              ))}
             <Button variant="ghost" className={`cursor-pointer w-full`}>
               Add to favourites
             </Button>
@@ -198,8 +244,8 @@ function Post({ post }) {
           </DialogContent>
         </Dialog>
       </div>
-        
-        <p className="my-5 mx-2">{post.caption}</p>
+
+      <p className="my-5 mx-2">{post.caption}</p>
       <div className={`my-5 rounded-[2.5rem] overflow-hidden`}>
         <img
           className={`object-cover aspect-square w-full`}
@@ -235,18 +281,23 @@ function Post({ post }) {
             className={`cursor-pointer hover:text-gray-600`}
           />
         </div>
-        {user?.saved.includes(post._id) ? <FaBookmark
-          size="20px"
-          onClick={savePostHandler}
-          className={`cursor-pointer`}
-        /> :
-        <FaRegBookmark
-          size="20px"
-          onClick={savePostHandler}
-          className={`cursor-pointer`}
-        />}
+        {user?.saved.includes(post._id) ? (
+          <FaBookmark
+            size="20px"
+            onClick={savePostHandler}
+            className={`cursor-pointer`}
+          />
+        ) : (
+          <FaRegBookmark
+            size="20px"
+            onClick={savePostHandler}
+            className={`cursor-pointer`}
+          />
+        )}
       </div>
-      <span className={`font-medium block mt-1`}>{post.likes.length} likes</span>
+      <span className={`font-medium block mt-1`}>
+        {post.likes.length} likes
+      </span>
       {comments.length > 0 && (
         <span
           onClick={() => {
@@ -275,7 +326,9 @@ function Post({ post }) {
           value={text}
           onChange={changeEventHandler}
           placeholder="Add a comment..."
-          className={`outline-none text-sm w-full mt-1 ${isDark ? 'bg-[#212121]' : 'bg-[#f3f3f3]'}`}
+          className={`outline-none text-sm w-full mt-1 ${
+            isDark ? "bg-[#212121]" : "bg-[#f3f3f3]"
+          }`}
         />
         {text && (
           <span
@@ -288,7 +341,6 @@ function Post({ post }) {
       </div>
     </div>
   );
-    
 }
 
 export default Post;
