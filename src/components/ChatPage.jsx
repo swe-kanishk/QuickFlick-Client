@@ -46,7 +46,7 @@ function ChatPage() {
   const { unreadMessages } = useSelector(store => store.chat);
 
   return (
-    <div className={`flex ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} pb-[65px] h-screen`}>
+    <div className={`flex ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} h-[calc(100vh-60px)]`}>
       <section className="w-full md:w-1/4 my-8">
         <h1 className="font-semibold mb-4 flex items-center gap-2 px-3 text-xl"><FaUser /> {user?.username}</h1>
         <hr className="mb-4 text-gray-300" />

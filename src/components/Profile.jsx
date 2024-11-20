@@ -22,6 +22,8 @@ import { setAuthUser, setUserProfile } from "@/redux/authSlice";
 import { ImExit } from "react-icons/im";
 import { toast } from "sonner";
 import axios from "axios";
+import moment from "moment";
+import { MdMessage } from "react-icons/md";
 
 // Lazy load CreatePost component
 const CreatePost = lazy(() => import("./CreatePost"));
@@ -66,8 +68,10 @@ const Profile = React.memo(() => {
     }
   };
 
+
   return (
-    <div className={`flex flex-col max-w-5xl h-screen mx-auto items-start ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} justify-start px-5 md:px-0 py-3`}>
+    <div className={`flex flex-col max-w-5xl h-[calc(100vh-60px)] mx-auto items-start ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} justify-start px-5 md:px-0 py-3`}>
+      
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="md:grid flex-col w-full md:grid-cols-2 flex">
           <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg ">

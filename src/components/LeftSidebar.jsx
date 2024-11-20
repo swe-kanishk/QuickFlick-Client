@@ -98,6 +98,12 @@ function LeftSidebar() {
       case "Notifications":
         navigate('/notifications');
         setActive("Notifications");
+        return;
+
+      case "Explore":
+        navigate('/explore');
+        setActive("Explore")
+        return;
     }
   };
 

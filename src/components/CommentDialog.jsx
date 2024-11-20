@@ -93,7 +93,7 @@ const CommentDialog = ({
                 <DialogTrigger asChild>
                   <MoreHorizontal className="cursor-pointer" />
                 </DialogTrigger>
-                <DialogContent className="flex flex-col items-center text-sm text-center">
+                <DialogContent className="flex max-w-[90%] sm:max-w-lg rounded-lg flex-col items-center text-sm text-center">
                   <div className="cursor-pointer w-full text-[#ED4956] font-bold">
                     Unfollow
                   </div>

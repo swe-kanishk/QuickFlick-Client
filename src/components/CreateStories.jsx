@@ -100,7 +100,7 @@ function CreateStories() {
       </div>
 
         <Dialog open={openSelect}>
-          <DialogContent onInteractOutside={() => setOpenSelect(false)}>
+          <DialogContent className="max-w-[90%] sm:max-w-lg rounded-lg" onInteractOutside={() => setOpenSelect(false)}>
             <DialogHeader className="text-center font-semibold">
               What do you want ?
             </DialogHeader>
@@ -124,7 +124,7 @@ function CreateStories() {
         </Dialog>
 
         <Dialog open={openCreateStory}>
-          <DialogContent onInteractOutside={() => setOpenCreateStory(false)}>
+          <DialogContent className="max-w-[90%] sm:max-w-lg rounded-lg" onInteractOutside={() => setOpenCreateStory(false)}>
             <DialogHeader className="text-center font-semibold">
               Add New Story
             </DialogHeader>

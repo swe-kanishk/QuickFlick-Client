@@ -60,8 +60,8 @@ function CreatePost({ open, setOpen }) {
 
 
   return (
-    <Dialog open={open}>
-      <DialogContent onInteractOutside={() => setOpen(false)}>
+    <Dialog open={open} >
+      <DialogContent className="max-w-[90%] sm:max-w-lg rounded-lg" onInteractOutside={() => setOpen(false)}>
         <DialogHeader className="text-center font-semibold">
           Create New Post
         </DialogHeader>

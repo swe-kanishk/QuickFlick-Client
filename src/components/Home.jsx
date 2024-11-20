@@ -43,7 +43,7 @@ function Home() {
    Object.keys(unreadMessages).filter((userId) => unreadMessages[userId] > 0);
 
   return (
-    <div  className={`flex flex-col ${isDark ? 'bg-[#151515]' : 'bg-white'} h-screen pb-[70px] overflow-scroll`}>
+    <div  className={`flex flex-col ${isDark ? 'bg-[#151515]' : 'bg-white'} h-screen pb-5 overflow-scroll`}>
       <div className={`flex fixed items-center top-0 z-50 right-0 w-full px-3 py-4 justify-between md:hidden ${isDark ? 'bg-[#151515]' : 'bg-white'}`}>
         <Link to={`/profile/${user._id}`} className='flex gap-2 items-start'>
           <div className='h-12 w-12 rounded-full relative'>

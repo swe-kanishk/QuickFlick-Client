@@ -213,7 +213,7 @@ function Post({ post }) {
             <MoreHorizontal className={`cursor-pointer`} />
           </DialogTrigger>
           <DialogContent
-            className={`grid text-sm place-items-center text-center px-3 py-2 rounded-md bg-white`}
+            className={`grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white`}
           >
             {post?.author._id !== user?._id &&
               (user?.following?.includes(post?.author?._id) ? (

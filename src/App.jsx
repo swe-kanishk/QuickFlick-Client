@@ -1,5 +1,10 @@
 // Import statements
-import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Link,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -18,7 +23,11 @@ import ForgotPassword from "./components/ForgotPassword";
 
 // Redux actions
 import { setSocket } from "./redux/socketSlice.js";
-import { addUnreadMessage, setMessages, setOnlineUsers } from "./redux/chatSlice.js";
+import {
+  addUnreadMessage,
+  setMessages,
+  setOnlineUsers,
+} from "./redux/chatSlice.js";
 import { addNotification } from "./redux/realTimeNotificationSlice";
 import { setAuthUser, setTheme } from "./redux/authSlice.js"; // Assuming you have this action for setting auth user
 import ProtectedRoutes from "./components/ProtectedRoutes";
@@ -27,14 +36,19 @@ import AuthRoute from "./components/AuthRoute";
 import ResetPassword from "./components/ResetPassword";
 import NotFound from "./components/NotFound";
 import Notifications from "./components/Notifications";
+import { ToastContainer, toast } from "react-toastify";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import moment from "moment";
+import { MdMessage } from "react-icons/md";
+import Explore from "./components/Explore";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const { user } = useSelector((store) => store.auth);
   const { socket } = useSelector((store) => store.socketio);
-  const {messages} = useSelector(store => store.chat)
-  const { selectedUser } = useSelector(store => store.auth);
+  const { messages } = useSelector((store) => store.chat);
+  const { selectedUser } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -70,6 +84,7 @@ function App() {
         { path: "/account/edit", element: <EditProfile /> },
         { path: "/chat", element: <ChatPage /> },
         { path: "/notifications", element: <Notifications /> },
+        { path: "/explore", element: <Explore /> },
       ],
     },
     {
@@ -98,6 +113,40 @@ function App() {
     },
   ]);
 
+  const CustomToast = ({ newMessage }) => (
+    <div className="flex flex-col gap-1 bg-orange-600 w-full max-w-lg rounded-xl px-3 py-2">
+      <div className="flex justify-between">
+        <span className="font-medium text-sm flex items-center gap-2">
+          <MdMessage size={"20px"} />
+          New Message!
+        </span>
+        <span className="text-[12px]">
+          {moment(newMessage?.createdAt).fromNow()}
+        </span>
+      </div>
+      <div className="flex gap-2">
+        <Avatar className="min-w-5 min-h-5 rounded-full aspect-square object-cover overflow-hidden">
+          <AvatarImage
+            src={newMessage?.sender?.avatar}
+            className="object-cover w-5 h-5 rounded-full aspect-square"
+            alt="userProfile"
+          />
+          <AvatarFallback>
+            <img
+              src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
+              className="object-cover w-8 h-8 rounded-full aspect-square"
+              alt=""
+            />
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <p className="font-semibold">{newMessage?.sender?.username}</p>
+          <p className="text-sm">{newMessage?.message}</p>
+        </div>
+      </div>
+    </div>
+  );
+
   useEffect(() => {
     if (user) {
       const socketio = io(import.meta.env.VITE_API_URL, {
@@ -116,17 +165,16 @@ function App() {
         dispatch(addNotification(notification));
       });
 
-      socketio.on('newMessage', (newMessage) => {
+      socketio.on("newMessage", (newMessage) => {
         const { senderId, receiverId } = newMessage;
-        console.log('messages', messages)
-        console.log('newMessages', newMessage)
+        console.log(newMessage);
+        toast(<CustomToast newMessage={newMessage} />, { autoClose: 3000 });
         if (selectedUser && senderId === selectedUser?._id) {
-          dispatch(setMessages([...messages, newMessage]))
-        }
-        else {
+          dispatch(setMessages([...messages, newMessage]));
+        } else {
           dispatch(addUnreadMessage({ userId: senderId }));
         }
-      })
+      });
 
       return () => {
         socketio.close();
@@ -138,7 +186,20 @@ function App() {
     }
   }, [user, dispatch]);
 
-  return <RouterProvider router={ProtectedBrowserRouter} />;
+  return (
+    <>
+      <RouterProvider router={ProtectedBrowserRouter} />
+      <ToastContainer
+  className={`z-50 fixed top-[90px] right-0 min-w-lg max-w-lg`}
+  autoClose={3000}
+  hideProgressBar={false}
+  closeOnClick
+  pauseOnHover
+  draggable
+  theme="light"
+/>
+    </>
+  );
 }
 
 export default App;

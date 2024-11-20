@@ -45,7 +45,7 @@ function Notifications() {
   })();
 
   return (
-    <div className={`p-3 flex h-screen flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
+    <div className={`p-3 flex h-[calc(100vh-60px)] flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
         <div className="border-b border-gray-200">
             <p className="text-xl my-3 font-semibold flex items-center gap-2"><FaRegBell className="rotate-[-30deg] font-semibold" /> Notifications </p>
         </div>
