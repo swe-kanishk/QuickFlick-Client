@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TbSettingsFilled } from "react-icons/tb";
 import { IoCameraOutline } from "react-icons/io5";
-import { IoMdGrid } from "react-icons/io";
 import { BiMoviePlay } from "react-icons/bi";
 import { LuContact2 } from "react-icons/lu";
 import { FaRegBookmark } from "react-icons/fa";
@@ -22,20 +21,31 @@ import { setAuthUser, setUserProfile } from "@/redux/authSlice";
 import { ImExit } from "react-icons/im";
 import { toast } from "sonner";
 import axios from "axios";
-import moment from "moment";
-import { MdMessage } from "react-icons/md";
+import { IoIosCloseCircleOutline, IoMdGrid } from "react-icons/io";
+import { Dialog, DialogContent } from "@radix-ui/react-dialog";
+import { DialogHeader } from "./ui/dialog";
 
 // Lazy load CreatePost component
 const CreatePost = lazy(() => import("./CreatePost"));
 
 const Profile = React.memo(() => {
   const [open, setOpen] = useState(false);
+  const [viewList, setViewList] = useState({
+    type: null,
+    data: null,
+    isOpen: false,
+  });
+  
+  const updateViewList = (type = null, data = null, isOpen = false) => {
+    setViewList({ type, data, isOpen });
+  };
+  
   const [active, setActive] = useState("posts");
   const params = useParams();
   const userId = params.id;
   getUserProfile(userId);
   const { userProfile, user, isDark } = useSelector((store) => store.auth);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const isLoggedInUSerProfile = useMemo(
     () => userProfile?._id === user?._id,
@@ -56,7 +66,9 @@ const Profile = React.memo(() => {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/logout`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/logout`
+      );
       if (res.data.success) {
         dispatch(setAuthUser(null));
         navigate("/login");
@@ -67,19 +79,23 @@ const Profile = React.memo(() => {
       toast.error(error.response.data.message);
     }
   };
-
-
   return (
-    <div className={`flex flex-col max-w-5xl h-[calc(100vh-60px)] mx-auto items-start ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} justify-start px-5 md:px-0 py-3`}>
-      
+    <div
+      className={`flex flex-col max-w-5xl h-[calc(100vh-60px)] mx-auto items-start ${
+        isDark ? "bg-[#151515] text-white" : "bg-white text-black"
+      } justify-start px-5 md:px-0 py-3`}
+    >
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="md:grid flex-col w-full md:grid-cols-2 flex">
           <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg ">
             <div className="flex items-center gap-2">
-            <FaUser />
-            {userProfile?.username}
+              <FaUser />
+              {userProfile?.username}
             </div>
-            <ImExit onClick={() => logoutHandler()} className="cursor-pointer h-5 w-5 text-blue-500" />
+            <ImExit
+              onClick={() => logoutHandler()}
+              className="cursor-pointer h-5 w-5 text-blue-500"
+            />
           </span>
           <section className="flex items-center justify-start gap-8 md:justify-center">
             <Avatar className="min-w-[5rem] min-h-[5rem] rounded-full aspect-square object-cover overflow-hidden">
@@ -102,19 +118,32 @@ const Profile = React.memo(() => {
                 </span>
                 posts
               </p>
-              <p className="flex flex-col md:flex-row justify-center items-center">
+              <p
+                onClick={() => {
+                  
+                  updateViewList("followers", userProfile.followers, true)
+                }}
+                className="flex flex-col md:flex-row justify-center items-center"
+              >
                 <span className="font-medium">
                   {userProfile?.follower.length}{" "}
                 </span>
                 followers
               </p>
-              <p className="flex flex-col md:flex-row justify-center items-center">
+              <p
+                onClick={() => {
+                  
+                  updateViewList("following", userProfile.following, true)
+                }}
+                className="flex flex-col md:flex-row justify-center items-center"
+              >
                 <span className="font-medium">
                   {userProfile?.following.length}{" "}
                 </span>
                 following
               </p>
             </div>
+
           </section>
           <section className="flex flex-col">
             <span className="font-medium mt-3 text-lg mr-4">
@@ -123,18 +152,26 @@ const Profile = React.memo(() => {
             <div>
               <span>{userProfile?.bio || "Bio here..."}</span>
             </div>
-            <div className="flex items-center py-4 justify-start">
+            <div className="flex gap-2 items-center py-4 justify-start">
               {isLoggedInUSerProfile ? (
                 <>
-                  <Link to="/account/edit">
-                    <button className={`py-1 px-2 ${isDark ? 'bg-[#302f2f]' : 'bg-gray-200'} mr-1 rounded-md font-medium`}>
+                  <Link to="/account/edit" className="w-2/5">
+                    <button
+                      className={`py-1 px-2 w-full ${
+                        isDark ? "bg-[#302f2f]" : "bg-gray-200"
+                      } mr-1 rounded-md font-medium`}
+                    >
                       Edit Profile
                     </button>
                   </Link>
-                  <button className={`py-1 px-2 ${isDark ? 'bg-[#302f2f]' : 'bg-gray-200'} ml-1 mr-2 rounded-md font-medium`}>
+                  <button
+                    className={`py-1 px-2 w-2/5 ${
+                      isDark ? "bg-[#302f2f]" : "bg-gray-200"
+                    } ml-1 mr-2 rounded-md font-medium`}
+                  >
                     View archive
                   </button>
-                  <button>
+                  <button className="w-1/5">
                     <TbSettingsFilled size={"24px"} />
                   </button>
                 </>
@@ -265,6 +302,69 @@ const Profile = React.memo(() => {
           </div>
         </div>
       </div>
+      <Dialog open={viewList.isOpen}>
+      <DialogContent
+        className="absolute flex flex-col gap-3 bg-black text-white inset-0"
+        onInteractOutside={() => updateViewList()}
+      >
+        <DialogHeader className="text-center font-semibold">
+          <div className="flex justify-between p-3">
+            <span>{viewList.type}</span>
+            <IoIosCloseCircleOutline
+              size={"26px"}
+              className="cursor-pointer"
+              onClick={() => updateViewList()}
+            />
+          </div>
+        </DialogHeader>
+
+        {viewList?.data?.length > 0 ?  viewList?.data?.map((person) => {
+          return (
+            <Link
+              onClick={(e) => {
+                updateViewList();
+              }}
+              to={`/profile/${person._id}`}
+              className="flex gap-3 items-center px-3 py-1 justify-between"
+            >
+              <div className="flex gap-3 items-center">
+                <Avatar>
+                  <AvatarImage
+                    src={person?.avatar}
+                    alt="img"
+                    className="h-12 w-12 aspect-square overflow-hidden rounded-full object-cover"
+                  />
+                  <AvatarFallback>
+                    <img
+                      src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
+                      alt=""
+                      className="h-12 w-12 aspect-square rounded-full object-cover"
+                    />
+                  </AvatarFallback>
+                </Avatar>
+                <p className="font-medium text-gray-300 text-sm">
+                  {person?.username}
+                </p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent bubbling
+                  e.preventDefault(); // Prevent navigation
+                  console.log("hello");
+                }}
+                className="px-3 py-1 bg-gray-300 rounded-md text-black"
+              >
+                unfollow
+              </button>
+            </Link>
+          );
+        }) : (
+          <div className="my-auto h-full flex justify-center  items-center">
+            <span className="text-lg pb-5 font-semibold">No {viewList.type}!</span>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
     </div>
   );
 });
