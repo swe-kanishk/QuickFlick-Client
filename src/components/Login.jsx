@@ -6,7 +6,6 @@ import Input from "./ui/Input";
 import axios from "axios";
 import { toast } from "sonner";
 import { Loader, Loader2, Lock, Mail } from "lucide-react";
-import Logo from "./Logo";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser, setTheme } from "@/redux/authSlice";
 
