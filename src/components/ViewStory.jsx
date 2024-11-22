@@ -1,12 +1,14 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 function ViewStory({ user, setViewStory }) {
   const [stories, setStories] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0); // Track current story
-  const [progress, setProgress] = useState(0); // Progress percentage for current story
+  const [progress, setProgress] = useState(0); // Visual progress state
+  const progressIntervalRef = useRef(null); // Reference for progress interval
   const storyDuration = 5000; // Duration of each story in milliseconds
 
   // Fetch user's stories
@@ -41,23 +43,26 @@ function ViewStory({ user, setViewStory }) {
     // Reset progress to 0
     setProgress(0);
 
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => prev + 1);
+    // Start the progress bar
+    progressIntervalRef.current = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(progressIntervalRef.current); // Stop progress interval
+          if (currentIndex < stories.length - 1) {
+            setCurrentIndex((prevIndex) => prevIndex + 1); // Advance to next story
+          } else {
+            setViewStory(false); // Close when all stories are done
+          }
+          return 0; // Reset progress for the next story
+        }
+        return prevProgress + 1; // Increment progress
+      });
     }, storyDuration / 100);
 
-    const timer = setTimeout(() => {
-      if (currentIndex < stories.length - 1) {
-        setCurrentIndex((prevIndex) => prevIndex + 1); // Go to next story
-      } else {
-        setViewStory(false); // Close when all stories are done
-      }
-    }, storyDuration);
-
     return () => {
-      clearTimeout(timer); // Clear auto-advance timer
-      clearInterval(progressInterval); // Clear progress interval
+      clearInterval(progressIntervalRef.current); // Cleanup interval
     };
-  }, [currentIndex, stories.length]);
+  }, [currentIndex, stories.length, setViewStory]);
 
   const handleNext = () => {
     if (currentIndex < stories.length - 1) {
@@ -74,21 +79,12 @@ function ViewStory({ user, setViewStory }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex-col flex justify-center">
-      <div className="flex items-center justify-between px-3 py-1 text-white">
-        <div className="flex items-center justify-start gap-2">
-          <p>{user?.username}</p>
-          <span className="text-[12px] text-gray-300">{moment(stories.createdAt).fromNow()}</span>
-        </div>
-        <IoMdClose
-          onClick={() => setViewStory(false)}
-          className="w-6 h-6 text-white cursor-pointer hover:text-gray-400"
-        />
-      </div>
+    <div className="fixed inset-0 bg-black z-50 flex-col flex items-start justify-center">
       {stories?.length > 0 && (
-        <div className="w-full relative max-w-lg h-full flex flex-col items-center justify-center">
+        <div className="relative w-full h-full flex flex-col items-center justify-center">
           {/* Progress Bars */}
-          <div className="absolute top-4 left-0 w-full flex items-center space-x-1 px-4">
+          <div className="fixed top-4 left-0 w-full flex flex-col gap-3">
+            <div className="flex items-center space-x-1 px-4">
             {stories.map((_, index) => (
               <div
                 key={index}
@@ -107,7 +103,33 @@ function ViewStory({ user, setViewStory }) {
                 )}
               </div>
             ))}
-          </div>
+
+            </div>
+            <div className="flex items-center justify-between px-4 text-white">
+              <div className="flex items-center justify-start gap-2">
+              <Avatar>
+              <AvatarImage className='h-10 w-10 rounded-full overflow-hidden object-cover' src={user?.avatar} alt="img" />
+              <AvatarFallback>
+                <img
+                  className='h-10 w-10 rounded-full overflow-hidden object-cover'
+                  src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
+                  alt=""
+                />
+              </AvatarFallback>
+            </Avatar>
+                <div className="flex flex-col">
+                <p className="text-sm">{user?.username}</p>
+                <span className="text-[12px] text-gray-300">
+                  {moment(stories[currentIndex]?.createdAt).fromNow()}
+                </span>
+                </div>
+              </div>
+              <IoMdClose
+                onClick={() => setViewStory(false)}
+                className="w-6 h-6 text-white cursor-pointer hover:text-gray-400"
+              />
+            </div>
+            </div>
 
           {/* Story Content */}
           <img
