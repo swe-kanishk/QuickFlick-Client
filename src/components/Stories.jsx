@@ -1,39 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import ViewStory from "./ViewStory";
-import axios from "axios";
 
 function Stories() {
-  const [loading, setLoading] = useState(false);
-  const [viewStory, setViewStory] = useState(null); // Change to null to store the story to view
-
+  const [viewStory, setViewStory] = useState(null); // Selected story to view
   const { user, isDark } = useSelector((store) => store.auth);
-  const storiesUser = user?.following?.filter((followingPeople) => followingPeople?.stories?.length ? followingPeople._id : null)
+
+  const storiesUser = user?.following?.filter((followingPeople) =>
+    followingPeople?.stories?.length ? followingPeople._id : null
+  );
+
   return (
     <>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 overflow-x-auto no-scrollbar p-2">
         {storiesUser?.map((story) => (
-          <div className="flex flex-col justify-center items-center gap-[5px]">
-          <div
-            key={story?._id}
-            onClick={() => setViewStory(story)}
-            className="w-14 h-14 bg-pink-500 cursor-pointer flex items-center justify-center rounded-full"
-          >
-            <div className="h-12 w-12 cursor-pointer rounded-full">
-              <img
-                src={story?.avatar || ""}
-                className="w-[4.5rem] overflow-hidden aspect-square object-cover rounded-full"
-                alt=""
-              />
-            </div>
-          </div>
-          <div className={`flex flex-col text-[12px] items-center gap-[5px] ${isDark ? 'text-white' : 'text-black'}`}><span>{story?.username}</span></div>
+          <div key={story?._id} className="flex flex-col items-center gap-2">
+            <div
+              onClick={() => setViewStory(story)}
+              className="relative w-16 h-16 cursor-pointer"
+            >
+              {/* Animated border */}
+              <div className="absolute inset-0 rounded-full animate-spin-slow border-4 border-transparent bg-gradient-to-tr from-yellow-400 via-pink-500 to-red-500"></div>
 
+              {/* User avatar */}
+              <div className="absolute inset-1 w-14 h-14 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                <img
+                  src={story?.avatar || ""}
+                  className="w-full h-full object-cover rounded-full"
+                  alt="Story Avatar"
+                />
+              </div>
             </div>
+            <span
+              className={`text-xs ${
+                isDark ? "text-white" : "text-black"
+              } text-center`}
+            >
+              {story?.username}
+            </span>
+          </div>
         ))}
       </div>
+
       {viewStory && (
-        <ViewStory user={viewStory} setViewStory={setViewStory} />
+        <ViewStory
+          storyUser={viewStory}
+          setViewStory={setViewStory}
+          allStories={storiesUser}
+        />
       )}
     </>
   );
