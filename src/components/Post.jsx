@@ -17,6 +17,7 @@ import moment from "moment";
 import { FaBookmark } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { setAuthUser } from "@/redux/authSlice";
+import Carousel from "./Carousel";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -247,11 +248,7 @@ function Post({ post }) {
 
       <p className="my-5 mx-2">{post.caption}</p>
       <div className={`my-5 rounded-[2.5rem] overflow-hidden`}>
-        <img
-          className={`object-cover aspect-square w-full`}
-          src={post?.image}
-          alt=""
-        />
+        <Carousel slides={post.images} />
       </div>
       <div className={`flex items-center justify-between mt-3`}>
         <div className={`flex items-center gap-3`}>

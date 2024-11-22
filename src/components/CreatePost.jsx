@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { readFileAsDataURL } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -11,45 +10,64 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "@/redux/postSlice";
 
 function CreatePost({ open, setOpen }) {
-  const [file, setFile] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
+  const [files, setFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { user } = useSelector(store => store.auth);
   const { posts } = useSelector(store => store.post);
   const imageRef = useRef();
 
+  // Handle multiple file changes
   const fileChangeHandler = async (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-      const dataURL = await readFileAsDataURL(file);
-      setImagePreview(dataURL);
+    const selectedFiles = e.target.files;
+    if (selectedFiles.length > 0) {
+      const newFiles = Array.from(selectedFiles);
+      setFiles(newFiles);
+
+      // Generate preview URLs for each file
+      const previews = await Promise.all(newFiles.map(file => readFileAsDataURL(file)));
+      setImagePreviews(previews);
     }
   };
+
+  // Helper function to convert file to Data URL
+  const readFileAsDataURL = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle post creation
   const createPostHandler = async (e) => {
     const formData = new FormData();
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
 
     formData.append("caption", caption);
-    if (imagePreview) formData.append("image", file);
     
+    // Append all selected files to FormData
+    files.forEach(file => formData.append("images", file));
+
     try {
       setLoading(true);
 
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/post/addpost`, formData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data', Authorization : token },
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       });
-      
-      if(res.data.success) {
-        dispatch(setPosts([res.data.post, ...posts]))
+
+      if (res.data.success) {
+        dispatch(setPosts([res.data.post, ...posts]));
         toast.success(res.data.message);
         setOpen(false);
-        setFile("")
-        setImagePreview("")
-        setCaption("")
+        setFiles([]);
+        setImagePreviews([]);
+        setCaption("");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
@@ -57,7 +75,6 @@ function CreatePost({ open, setOpen }) {
       setLoading(false);
     }
   };
-
 
   return (
     <Dialog open={open} >
@@ -86,20 +103,29 @@ function CreatePost({ open, setOpen }) {
           className="focus-visible:ring-transparent border-none"
           placeholder="Write a caption..."
         />
-        {imagePreview && (
-          <div className="w-full h-64 flex items-center justify-center">
-            <img
-              src={imagePreview}
-              alt="preview_img"
-              className="object-cover h-full w-full rounded-md"
-            />
+        
+        {/* Display multiple image previews */}
+        {imagePreviews.length > 0 && (
+          <div className="w-full h-64 flex flex-wrap gap-2">
+            {imagePreviews.map((preview, index) => (
+              <div key={index} className="w-24 h-24 overflow-hidden rounded-md">
+                <img
+                  src={preview}
+                  alt={`preview_img_${index}`}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))}
           </div>
         )}
+
+        {/* Hidden file input */}
         <input
           ref={imageRef}
           type="file"
           className="hidden"
           onChange={fileChangeHandler}
+          multiple
         />
         <Button
           onClick={() => imageRef.current.click()}
@@ -107,8 +133,10 @@ function CreatePost({ open, setOpen }) {
         >
           Select from computer
         </Button>
-        {imagePreview &&
-          (loading ? (
+
+        {/* Button for posting */}
+        {imagePreviews.length > 0 && (
+          loading ? (
             <Button>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Please wait
@@ -121,7 +149,8 @@ function CreatePost({ open, setOpen }) {
             >
               Post
             </Button>
-          ))}
+          )
+        )}
       </DialogContent>
     </Dialog>
   );
