@@ -105,9 +105,9 @@ function CreatePost({ open, setOpen }) {
         />
         
         {/* Display multiple image previews */}
-        {imagePreviews.length > 0 && (
+        {imagePreviews?.length > 0 && (
           <div className="w-full h-64 flex flex-wrap gap-2">
-            {imagePreviews.map((preview, index) => (
+            {imagePreviews?.map((preview, index) => (
               <div key={index} className="w-24 h-24 overflow-hidden rounded-md">
                 <img
                   src={preview}
@@ -135,7 +135,7 @@ function CreatePost({ open, setOpen }) {
         </Button>
 
         {/* Button for posting */}
-        {imagePreviews.length > 0 && (
+        {imagePreviews?.length > 0 && (
           loading ? (
             <Button>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

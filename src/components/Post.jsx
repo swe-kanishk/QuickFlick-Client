@@ -32,6 +32,7 @@ import {
   FaWhatsapp,
   FaLink,
 } from "react-icons/fa";
+import PostActions from "./PostActions";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -44,6 +45,9 @@ function Post({ post }) {
   const [postlikes, setPostLikes] = useState(post?.likes.length);
   const [comments, setComments] = useState(post?.comments);
   const [shareOpen, setShareOpen] = useState(false);
+  const [showHeart, setShowHeart] = useState(false);
+
+  let lastTap = 0;
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -193,11 +197,23 @@ function Post({ post }) {
     toast.success("Link copied to clipboard!");
   };
 
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300; // Time interval for detecting double-tap in ms
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      setShowHeart(true); // Show heart animation
+      setTimeout(() => setShowHeart(false), 1000); // Remove heart animation after 1s
+      likeOrDislikeHandler();
+    }
+    lastTap = now;
+  };
+
   return (
     <div
       className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${
         isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
       } max-w-md mx-auto`}
+      onClick={handleDoubleTap}
     >
       <div className={`flex items-center justify-between`}>
         <Link
@@ -273,145 +289,27 @@ function Post({ post }) {
       </div>
 
       <p className="my-5 mx-2">{post.caption}</p>
-      <div className={`my-5 rounded-[2.5rem] overflow-hidden`}>
+      <div className={`my-5 relative rounded-[2.5rem] overflow-hidden`}>
         <Carousel slides={post.images} />
-      </div>
-      {/* <div className={`flex items-center justify-between mt-3`}>
-        <div className={`flex items-center gap-3`}>
-          {liked ? (
-            <IoMdHeart
-              onClick={likeOrDislikeHandler}
-              size="26px"
-              className={`cursor-pointer text-red-500`}
-            />
-          ) : (
-            <IoMdHeartEmpty
-              onClick={likeOrDislikeHandler}
-              size="26px"
-              className={`cursor-pointer`}
-            />
-          )}
-          <BsChat
-            onClick={() => {
-              setOpen(true);
-              dispatch(setSelectedPost(post));
-            }}
-            size="22px"
-            className={`cursor-pointer hover:text-gray-600`}
-          />
-          <PiPaperPlaneTilt
-            size="23px"
-            className={`cursor-pointer hover:text-gray-600`}
-          />
-          <WhatsappShareButton />
-        </div>
-        {user?.saved.includes(post._id) ? (
-          <FaBookmark
-            size="20px"
-            onClick={savePostHandler}
-            className={`cursor-pointer`}
-          />
-        ) : (
-          <FaRegBookmark
-            size="20px"
-            onClick={savePostHandler}
-            className={`cursor-pointer`}
-          />
-        )}
-      </div> */}
-      <div className={`flex items-center justify-between mt-3`}>
-        <div className={`flex items-center gap-3`}>
-          {liked ? (
-            <IoMdHeart
-              onClick={likeOrDislikeHandler}
-              size="26px"
-              className={`cursor-pointer text-red-500`}
-            />
-          ) : (
-            <IoMdHeartEmpty
-              onClick={likeOrDislikeHandler}
-              size="26px"
-              className={`cursor-pointer`}
-            />
-          )}
-          <BsChat
-            onClick={() => {
-              setOpen(true);
-              dispatch(setSelectedPost(post));
-            }}
-            size="22px"
-            className={`cursor-pointer hover:text-gray-600`}
-          />
-          <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-            <DialogTrigger asChild>
-              <PiPaperPlaneTilt
-                size="23px"
-                className={`cursor-pointer hover:text-gray-600`}
-              />
-            </DialogTrigger>
-            <DialogContent
-              className={`p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg`}
-            >
-              <h2 className="text-lg font-semibold mb-2">Share this Post</h2>
-              <div className="flex justify-evenly gap-8 mb-2">
-                <FacebookShareButton url={window.location.href}>
-                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                    <FaFacebookF className="h-5 w-5 text-white" />
-                  </span>
-                </FacebookShareButton>
-                <EmailShareButton url={window.location.href}>
-                  <span className="flex items-center justify-center p-3 overflow-hidden aspect-square bg-black rounded-full">
-                    <FaEnvelope className="h-5 w-5 text-white" />
-                  </span>
-                </EmailShareButton>
-                <TelegramShareButton url={window.location.href}>
-                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                    <FaTelegramPlane className="h-6 w-6 text-white" />
-                  </span>
-                </TelegramShareButton>
-                <WhatsappShareButton url={window.location.href}>
-                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-green-600 rounded-full">
-                    <FaWhatsapp className="h-6 w-6 text-white" />
-                  </span>
-                </WhatsappShareButton>
-                <LinkedinShareButton url={window.location.href}>
-                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                    <FaLinkedin className="h-6 w-6 text-white" />
-                  </span>
-                </LinkedinShareButton>
-              </div>
-              <span className="mx-auto font-semibold">or</span>
-              <input
-                type="text"
-                value={window.location.href}
-                disabled
-                className="px-3 py-2 rounded-xl border border-blue-600"
-              />
-              <Button
-                variant="ghost"
-                className="w-fit mx-auto bg-blue-700 text-white hover:bg-blue-600 flex items-center justify-center gap-2 hover:text-white text-sm"
-                onClick={copyLink}
-              >
-                <FaRegCopy />
-                <span>Copy Link</span>
-              </Button>
-            </DialogContent>
-          </Dialog>
-        </div>
-        {user?.saved.includes(post._id) ? (
-          <FaBookmark
-            size="20px"
-            onClick={savePostHandler}
-            className={`cursor-pointer`}
-          />
-        ) : (
-          <FaRegBookmark
-            size="20px"
-            onClick={savePostHandler}
-            className={`cursor-pointer`}
+        {showHeart && (
+          <IoMdHeart
+            size={50}
+            className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
           />
         )}
       </div>
+      <PostActions
+        liked={liked}
+        onLikeToggle={likeOrDislikeHandler}
+        commentsCount={comments.length}
+        onCommentClick={() => {
+          setOpen(true);
+          dispatch(setSelectedPost(post));
+        }}
+        onShareClick={() => setShareOpen(true)}
+        isSaved={user?.saved.includes(post._id)}
+        onSaveToggle={savePostHandler}
+      />
       <span className={`font-medium block mt-1`}>
         {post.likes.length} likes
       </span>
