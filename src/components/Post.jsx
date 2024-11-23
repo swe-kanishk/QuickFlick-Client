@@ -209,153 +209,210 @@ function Post({ post }) {
   };
 
   return (
-    <div
-      className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${
-        isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
-      } max-w-md mx-auto`}
-      onClick={handleDoubleTap}
-    >
-      <div className={`flex items-center justify-between`}>
-        <Link
-          to={`/profile/${post?.author._id}`}
-          className={`flex items-center gap-3`}
-        >
-          <Avatar className={`w-8 h-8 rounded-full overflow-hidden`}>
-            <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
-            <AvatarFallback>
-              <img
-                src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
-                alt=""
-              />
-            </AvatarFallback>
-          </Avatar>
-          <div className={`flex items-center`}>
-            <div className="flex flex-col justify-center">
-              <h1>{post?.author?.username}</h1>
-              <span className="text-[12px] text-gray-400">
-                Posted {moment(post.createdAt).fromNow()}.
-              </span>
-            </div>
-            {post?.author?._id === user?._id && (
-              <span
-                className={`text-xs ml-5 px-2 py-1 ${
-                  isDark ? "bg-gray-100 text-black" : "bg-gray-700 text-white"
-                } font-medium rounded-sm`}
-              >
-                Author
-              </span>
-            )}
-          </div>
-        </Link>
-        <Dialog>
-          <DialogTrigger asChild>
-            <MoreHorizontal className={`cursor-pointer`} />
-          </DialogTrigger>
-          <DialogContent
-            className={`grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white`}
+    <>
+      <div
+        className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${
+          isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
+        } max-w-md mx-auto`}
+        onClick={handleDoubleTap}
+      >
+        <div className="flex items-center justify-between">
+          <Link
+            to={`/profile/${post?.author?._id}`}
+            className="flex items-center gap-3"
           >
-            {post?.author._id !== user?._id &&
-              (user?.following?.includes(post?.author?._id) ? (
-                <Button
-                  variant="ghost"
-                  className={`cursor-pointer border-none outline-none w-full font-bold`}
-                  onClick={() => handleFollowUnfollow(post?.author?._id)}
+            <Avatar className="w-8 h-8 rounded-full overflow-hidden">
+              <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
+              <AvatarFallback>
+                <img
+                  src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
+                  alt="Fallback"
+                />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex items-center">
+              <div className="flex flex-col justify-center">
+                <h1>{post?.author?.username}</h1>
+                <span className="text-[12px] text-gray-400">
+                  Posted {moment(post?.createdAt).fromNow()}.
+                </span>
+              </div>
+              {post?.author?._id === user?._id && (
+                <span
+                  className={`text-xs ml-5 px-2 py-1 ${
+                    isDark ? "bg-gray-100 text-black" : "bg-gray-700 text-white"
+                  } font-medium rounded-sm`}
                 >
-                  Unfollow
-                </Button>
-              ) : (
-                <Button
-                  variant="ghost"
-                  className={`cursor-pointer border-none outline-none w-full font-bold`}
-                  onClick={() => handleFollowUnfollow(post?.author?._id)}
-                >
-                  Follow
-                </Button>
-              ))}
-            <Button variant="ghost" className={`cursor-pointer w-full`}>
-              Add to favourites
-            </Button>
-            {user && user?._id === post?.author?._id && (
-              <Button
-                onClick={deletePostHandler}
-                variant="ghost"
-                className={`cursor-pointer w-full`}
-              >
-                Delete
+                  Author
+                </span>
+              )}
+            </div>
+          </Link>
+          <Dialog>
+            <DialogTrigger asChild>
+              <MoreHorizontal className="cursor-pointer" />
+            </DialogTrigger>
+            <DialogContent
+              className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white"
+            >
+              {post?.author?._id !== user?._id &&
+                (user?.following?.includes(post?.author?._id) ? (
+                  <Button
+                    variant="ghost"
+                    className="cursor-pointer border-none outline-none w-full font-bold"
+                    onClick={() => handleFollowUnfollow(post?.author?._id)}
+                  >
+                    Unfollow
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className="cursor-pointer border-none outline-none w-full font-bold"
+                    onClick={() => handleFollowUnfollow(post?.author?._id)}
+                  >
+                    Follow
+                  </Button>
+                ))}
+              <Button variant="ghost" className="cursor-pointer w-full">
+                Add to favourites
               </Button>
-            )}
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      <p className="my-5 mx-2">{post.caption}</p>
-      <div className={`my-5 relative rounded-[2.5rem] overflow-hidden`}>
-        <Carousel slides={post.images} />
-        {showHeart && (
-          <IoMdHeart
-            size={50}
-            className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
-          />
-        )}
-      </div>
-      <PostActions
-        liked={liked}
-        onLikeToggle={likeOrDislikeHandler}
-        commentsCount={comments.length}
-        onCommentClick={() => {
-          setOpen(true);
-          dispatch(setSelectedPost(post));
-        }}
-        onShareClick={() => setShareOpen(true)}
-        isSaved={user?.saved.includes(post._id)}
-        onSaveToggle={savePostHandler}
-      />
-      <span className={`font-medium block mt-1`}>
-        {post.likes.length} likes
-      </span>
-      {comments.length > 0 && (
-        <span
-          onClick={() => {
+              {user && user?._id === post?.author?._id && (
+                <Button
+                  onClick={deletePostHandler}
+                  variant="ghost"
+                  className="cursor-pointer w-full"
+                >
+                  Delete
+                </Button>
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
+  
+        <p className="my-5 mx-2">{post.caption}</p>
+        <div className="my-5 relative rounded-[2.5rem] overflow-hidden">
+          <Carousel slides={post.images} />
+          {showHeart && (
+            <IoMdHeart
+              size={50}
+              className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+            />
+          )}
+        </div>
+        <PostActions
+          liked={liked}
+          onLikeToggle={likeOrDislikeHandler}
+          commentsCount={comments.length}
+          onCommentClick={() => {
             setOpen(true);
             dispatch(setSelectedPost(post));
           }}
-          className={`text-gray-400 cursor-pointer`}
-        >
-          View all {comments.length} comments
-        </span>
-      )}
-      <CommentDialog
-        open={open}
-        setOpen={setOpen}
-        post={post}
-        liked={liked}
-        setLiked={setLiked}
-        likeOrDislikeHandler={likeOrDislikeHandler}
-        postCommentHandler={postCommentHandler}
-        text={text}
-        setText={setText}
-      />
-      <div className={`flex items-center justify-between`}>
-        <input
-          type="text"
-          value={text}
-          onChange={changeEventHandler}
-          placeholder="Add a comment..."
-          className={`outline-none text-sm w-full mt-1 ${
-            isDark ? "bg-[#212121]" : "bg-[#f3f3f3]"
-          }`}
+          onShareClick={() => setShareOpen(true)}
+          isSaved={user?.saved?.includes(post._id)}
+          onSaveToggle={savePostHandler}
         />
-        {text && (
+  
+        <span className="font-medium block mt-1">{post.likes.length} likes</span>
+        {comments.length > 0 && (
           <span
-            className={`text-[#3BADF8] cursor-pointer`}
-            onClick={postCommentHandler}
+            onClick={() => {
+              setOpen(true);
+              dispatch(setSelectedPost(post));
+            }}
+            className="text-gray-400 cursor-pointer"
           >
-            Post
+            View all {comments.length} comments
           </span>
         )}
+        <CommentDialog
+          open={open}
+          setOpen={setOpen}
+          post={post}
+          liked={liked}
+          setLiked={setLiked}
+          likeOrDislikeHandler={likeOrDislikeHandler}
+          postCommentHandler={postCommentHandler}
+          text={text}
+          setText={setText}
+        />
+        <div className="flex items-center justify-between">
+          <input
+            type="text"
+            value={text}
+            onChange={changeEventHandler}
+            placeholder="Add a comment..."
+            className={`outline-none text-sm w-full mt-1 ${
+              isDark ? "bg-[#212121]" : "bg-[#f3f3f3]"
+            }`}
+          />
+          {text && (
+            <span
+              className="text-[#3BADF8] cursor-pointer"
+              onClick={postCommentHandler}
+            >
+              Post
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+  
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogTrigger asChild>
+          <PiPaperPlaneTilt
+            size="23px"
+            className="cursor-pointer hover:text-gray-600"
+          />
+        </DialogTrigger>
+        <DialogContent
+          className="p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg"
+        >
+          <h2 className="text-lg font-semibold mb-2">Share this Post</h2>
+          <div className="flex justify-evenly gap-8 mb-2">
+            <FacebookShareButton url={window.location.href}>
+              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                <FaFacebookF className="h-5 w-5 text-white" />
+              </span>
+            </FacebookShareButton>
+            <EmailShareButton url={window.location.href}>
+              <span className="flex items-center justify-center p-3 overflow-hidden aspect-square bg-black rounded-full">
+                <FaEnvelope className="h-5 w-5 text-white" />
+              </span>
+            </EmailShareButton>
+            <TelegramShareButton url={window.location.href}>
+              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                <FaTelegramPlane className="h-6 w-6 text-white" />
+              </span>
+            </TelegramShareButton>
+            <WhatsappShareButton url={window.location.href}>
+              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-green-600 rounded-full">
+                <FaWhatsapp className="h-6 w-6 text-white" />
+              </span>
+            </WhatsappShareButton>
+            <LinkedinShareButton url={window.location.href}>
+              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                <FaLinkedin className="h-6 w-6 text-white" />
+              </span>
+            </LinkedinShareButton>
+          </div>
+          <span className="mx-auto font-semibold">or</span>
+          <input
+            type="text"
+            value={window.location.href}
+            disabled
+            className="px-3 py-2 rounded-xl border border-blue-600"
+          />
+          <Button
+            variant="ghost"
+            className="w-fit mx-auto bg-blue-700 text-white hover:bg-blue-600 flex items-center justify-center gap-2 hover:text-white text-sm"
+            onClick={copyLink}
+          >
+            <FaRegCopy />
+            <span>Copy Link</span>
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-}
+}  
 
 export default Post;
