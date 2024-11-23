@@ -150,7 +150,7 @@ const Profile = React.memo(() => {
               {userProfile?.username}
             </span>
             <div>
-              <span>{userProfile?.bio || "Bio here..."}</span>
+              <span style={{ whiteSpace: "pre-wrap" }}>{userProfile?.bio || "Bio here..."}</span>
             </div>
             <div className="flex gap-2 items-center py-4 justify-start">
               {isLoggedInUSerProfile ? (

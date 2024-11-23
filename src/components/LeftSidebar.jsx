@@ -16,6 +16,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
+import CreateDialog from "./CreateDialog";
 
 function LeftSidebar() {
   const [open, setOpen] = useState(false);
@@ -145,7 +146,7 @@ function LeftSidebar() {
           })}
         </ul>
       </div>
-      <CreatePost open={open} setOpen={setOpen} />
+      <CreateDialog open={open} setOpen={setOpen} />
     </>
   );
 }
