@@ -42,6 +42,7 @@ import moment from "moment";
 import { MdMessage } from "react-icons/md";
 import Explore from "./components/Explore";
 import "react-toastify/dist/ReactToastify.css";
+import ViewPost from "./components/ViewPost";
 
 
 axios.defaults.withCredentials = true;
@@ -87,6 +88,7 @@ function App() {
         { path: "/chat", element: <ChatPage /> },
         { path: "/notifications", element: <Notifications /> },
         { path: "/explore", element: <Explore /> },
+        { path: "/viewPost/:postId", element: <ViewPost />}
       ],
     },
     {
