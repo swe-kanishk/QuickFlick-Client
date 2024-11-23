@@ -211,7 +211,7 @@ function Post({ post }) {
   return (
     <>
       <div
-        className={`mt-4 w-full px-5 py-6 rounded-[3rem] ${
+        className={`mt-4 w-full px-5 py-6 rounded-[2rem] ${
           isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
         } max-w-md mx-auto`}
         onClick={handleDoubleTap}
@@ -290,7 +290,7 @@ function Post({ post }) {
         </div>
   
         <p className="my-5 mx-2">{post.caption}</p>
-        <div className="my-5 relative rounded-[2.5rem] overflow-hidden">
+        <div className="my-5 relative rounded-[1rem] overflow-hidden">
           <Carousel slides={post.images} />
           {showHeart && (
             <IoMdHeart

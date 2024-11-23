@@ -14,7 +14,7 @@ function Posts() {
     }
   },[])
   return (
-    <div className={`flex-1 my-3 h-screen ${isDark ? 'bg-[#151515]' : 'bg-white'} flex flex-col items-center`}>
+    <div className={`flex-1 gap-1 h-screen ${isDark ? 'bg-[#151515]' : 'bg-white'} flex flex-col items-center`}>
       {
         posts?.map((post) => <Post key={post._id} post={post} />)
       }
