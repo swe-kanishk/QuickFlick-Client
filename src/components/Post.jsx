@@ -357,12 +357,6 @@ function Post({ post }) {
       </div>
   
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogTrigger asChild>
-          <PiPaperPlaneTilt
-            size="23px"
-            className="cursor-pointer hover:text-gray-600"
-          />
-        </DialogTrigger>
         <DialogContent
           className="p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg"
         >
