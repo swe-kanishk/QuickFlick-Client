@@ -193,7 +193,7 @@ function CreateStories() {
       </Dialog>
 
       {/* View Story Component */}
-      {viewStory && <ViewStory user={user} setViewStory={setViewStory} />}
+      {viewStory && <ViewStory storiesUser={user} setViewStory={setViewStory} />}
     </>
   );
 }

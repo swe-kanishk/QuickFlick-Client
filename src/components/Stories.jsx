@@ -44,7 +44,7 @@ function Stories() {
 
       {viewStory && (
         <ViewStory
-          user={viewStory}
+        storiesUser={viewStory}
           setViewStory={setViewStory}
         />
       )}

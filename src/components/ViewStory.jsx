@@ -3,19 +3,22 @@ import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { useSelector } from "react-redux";
 
-function ViewStory({ user, setViewStory }) {
+function ViewStory({ storiesUser, setViewStory }) {
   const [stories, setStories] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0); // Track current story
   const [progress, setProgress] = useState(0); // Visual progress state
   const progressIntervalRef = useRef(null); // Reference for progress interval
   const storyDuration = 5000; // Duration of each story in milliseconds
 
+  const { user } = useSelector(store => store.auth)
+
   // Fetch user's stories
   const getUserStories = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/stories/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/stories/${storiesUser._id}`,
         { withCredentials: true }
       );
       if (response.data.success) {
@@ -34,7 +37,7 @@ function ViewStory({ user, setViewStory }) {
       setStories(userStories);
     };
     fetchStories();
-  }, [user]);
+  }, [storiesUser]);
 
   // Auto-advance logic for the current story
   useEffect(() => {
@@ -85,7 +88,7 @@ function ViewStory({ user, setViewStory }) {
           {/* Progress Bars */}
           <div className="fixed top-4 left-0 w-full flex flex-col gap-3">
             <div className="flex items-center space-x-1 px-4">
-            {stories.map((_, index) => (
+            {stories?.map((_, index) => (
               <div
                 key={index}
                 className={`h-1 flex-1 bg-gray-700 rounded-full ${
@@ -108,7 +111,7 @@ function ViewStory({ user, setViewStory }) {
             <div className="flex items-center justify-between px-4 text-white">
               <div className="flex items-center justify-start gap-2">
               <Avatar>
-              <AvatarImage className='h-10 w-10 rounded-full overflow-hidden object-cover' src={user?.avatar} alt="img" />
+              <AvatarImage className='h-10 w-10 rounded-full overflow-hidden object-cover' src={storiesUser?.avatar} alt="img" />
               <AvatarFallback>
                 <img
                   className='h-10 w-10 rounded-full overflow-hidden object-cover'
@@ -118,7 +121,7 @@ function ViewStory({ user, setViewStory }) {
               </AvatarFallback>
             </Avatar>
                 <div className="flex flex-col">
-                <p className="text-sm">{user?.username}</p>
+                <p className="text-sm">{storiesUser?._id === user?._id ? 'You' : storiesUser?.username}</p>
                 <span className="text-[12px] text-gray-300">
                   {moment(stories[currentIndex]?.createdAt).fromNow()}
                 </span>

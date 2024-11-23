@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { BsChat } from "react-icons/bs";
 import { PiPaperPlaneTilt } from "react-icons/pi";
-import { FaRegBookmark } from "react-icons/fa6";
+import { FaLinkedin, FaRegBookmark, FaRegCopy } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -18,6 +18,20 @@ import { FaBookmark } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { setAuthUser } from "@/redux/authSlice";
 import Carousel from "./Carousel";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import {
+  FaFacebookF,
+  FaEnvelope,
+  FaTelegramPlane,
+  FaWhatsapp,
+  FaLink,
+} from "react-icons/fa";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -29,6 +43,7 @@ function Post({ post }) {
   const [liked, setLiked] = useState(post?.likes.includes(user?._id) || false);
   const [postlikes, setPostLikes] = useState(post?.likes.length);
   const [comments, setComments] = useState(post?.comments);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -111,17 +126,19 @@ function Post({ post }) {
   const handleFollowUnfollow = async (userId) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/user/followorunfollow/${userId}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/v1/user/followorunfollow/${userId}`,
         {},
         {
           withCredentials: true,
         }
       );
       console.log(response);
-  
+
       if (response.data.success) {
         toast.success(response.data.message);
-  
+
         const isFollowing = response.data.isFollowing;
         // Dispatch the updated user to Redux
         dispatch(setAuthUser(response.data.user));
@@ -169,6 +186,11 @@ function Post({ post }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Link copied to clipboard!");
   };
 
   return (
@@ -222,13 +244,17 @@ function Post({ post }) {
                   variant="ghost"
                   className={`cursor-pointer border-none outline-none w-full font-bold`}
                   onClick={() => handleFollowUnfollow(post?.author?._id)}
-                >Unfollow</Button>
+                >
+                  Unfollow
+                </Button>
               ) : (
                 <Button
                   variant="ghost"
                   className={`cursor-pointer border-none outline-none w-full font-bold`}
                   onClick={() => handleFollowUnfollow(post?.author?._id)}
-                >Follow</Button>
+                >
+                  Follow
+                </Button>
               ))}
             <Button variant="ghost" className={`cursor-pointer w-full`}>
               Add to favourites
@@ -250,7 +276,7 @@ function Post({ post }) {
       <div className={`my-5 rounded-[2.5rem] overflow-hidden`}>
         <Carousel slides={post.images} />
       </div>
-      <div className={`flex items-center justify-between mt-3`}>
+      {/* <div className={`flex items-center justify-between mt-3`}>
         <div className={`flex items-center gap-3`}>
           {liked ? (
             <IoMdHeart
@@ -277,6 +303,100 @@ function Post({ post }) {
             size="23px"
             className={`cursor-pointer hover:text-gray-600`}
           />
+          <WhatsappShareButton />
+        </div>
+        {user?.saved.includes(post._id) ? (
+          <FaBookmark
+            size="20px"
+            onClick={savePostHandler}
+            className={`cursor-pointer`}
+          />
+        ) : (
+          <FaRegBookmark
+            size="20px"
+            onClick={savePostHandler}
+            className={`cursor-pointer`}
+          />
+        )}
+      </div> */}
+      <div className={`flex items-center justify-between mt-3`}>
+        <div className={`flex items-center gap-3`}>
+          {liked ? (
+            <IoMdHeart
+              onClick={likeOrDislikeHandler}
+              size="26px"
+              className={`cursor-pointer text-red-500`}
+            />
+          ) : (
+            <IoMdHeartEmpty
+              onClick={likeOrDislikeHandler}
+              size="26px"
+              className={`cursor-pointer`}
+            />
+          )}
+          <BsChat
+            onClick={() => {
+              setOpen(true);
+              dispatch(setSelectedPost(post));
+            }}
+            size="22px"
+            className={`cursor-pointer hover:text-gray-600`}
+          />
+          <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+            <DialogTrigger asChild>
+              <PiPaperPlaneTilt
+                size="23px"
+                className={`cursor-pointer hover:text-gray-600`}
+              />
+            </DialogTrigger>
+            <DialogContent
+              className={`p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg`}
+            >
+              <h2 className="text-lg font-semibold mb-2">Share this Post</h2>
+              <div className="flex justify-evenly gap-8 mb-2">
+                <FacebookShareButton url={window.location.href}>
+                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                    <FaFacebookF className="h-5 w-5 text-white" />
+                  </span>
+                </FacebookShareButton>
+                <EmailShareButton url={window.location.href}>
+                  <span className="flex items-center justify-center p-3 overflow-hidden aspect-square bg-black rounded-full">
+                    <FaEnvelope className="h-5 w-5 text-white" />
+                  </span>
+                </EmailShareButton>
+                <TelegramShareButton url={window.location.href}>
+                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                    <FaTelegramPlane className="h-6 w-6 text-white" />
+                  </span>
+                </TelegramShareButton>
+                <WhatsappShareButton url={window.location.href}>
+                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-green-600 rounded-full">
+                    <FaWhatsapp className="h-6 w-6 text-white" />
+                  </span>
+                </WhatsappShareButton>
+                <LinkedinShareButton url={window.location.href}>
+                  <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
+                    <FaLinkedin className="h-6 w-6 text-white" />
+                  </span>
+                </LinkedinShareButton>
+              </div>
+              <span className="mx-auto font-semibold">or</span>
+              <input
+                type="text"
+                value={window.location.href}
+                disabled
+                className="px-3 py-2 rounded-xl border border-blue-600"
+              />
+              <Button
+                variant="ghost"
+                className="w-fit mx-auto bg-blue-700 text-white hover:bg-blue-600 flex items-center justify-center gap-2 hover:text-white text-sm"
+                onClick={copyLink}
+              >
+                <FaRegCopy />
+                <span>Copy Link</span>
+              </Button>
+            </DialogContent>
+          </Dialog>
         </div>
         {user?.saved.includes(post._id) ? (
           <FaBookmark
