@@ -94,11 +94,6 @@ function App() {
         { path: "/notifications", element: <Notifications /> },
         { path: "/explore", element: <Explore /> },
         { path: "/viewPost/:postId", element: <ViewPost />},
-        { path: "/create-post", element: <CreatePost />},
-        { path: "/create-story", element: <CreateStory />},
-        { path: "/write-blog", element: <CreateBlogPost />},
-        { path: "/create-shorts", element: <CreateReel />},
-        { path: "/upload-audio", element: <UploadAudio />},
       ],
     },
     {
