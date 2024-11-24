@@ -43,6 +43,11 @@ import { MdMessage } from "react-icons/md";
 import Explore from "./components/Explore";
 import "react-toastify/dist/ReactToastify.css";
 import ViewPost from "./components/ViewPost";
+import CreatePost from "./components/CreatePost";
+import CreateStory from "./components/CreateStory";
+import CreateReel from "./components/CreateReel";
+import UploadAudio from "./components/UploadAudio";
+import CreateBlogPost from "./components/CreateBlogPost";
 
 
 axios.defaults.withCredentials = true;
@@ -88,7 +93,12 @@ function App() {
         { path: "/chat", element: <ChatPage /> },
         { path: "/notifications", element: <Notifications /> },
         { path: "/explore", element: <Explore /> },
-        { path: "/viewPost/:postId", element: <ViewPost />}
+        { path: "/viewPost/:postId", element: <ViewPost />},
+        { path: "/create-post", element: <CreatePost />},
+        { path: "/create-story", element: <CreateStory />},
+        { path: "/write-blog", element: <CreateBlogPost />},
+        { path: "/create-shorts", element: <CreateReel />},
+        { path: "/upload-audio", element: <UploadAudio />},
       ],
     },
     {
