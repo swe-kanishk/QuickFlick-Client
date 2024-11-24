@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Comment from "./Comment";
 import axios from "axios";
 import { setPosts } from "@/redux/postSlice";
+import Carousel from "./Carousel";
 
 const CommentDialog = ({
   open,
@@ -103,11 +104,7 @@ const CommentDialog = ({
               </Dialog>
             </div>
           <div className="md:w-3/5 flex items-center justify-center h-[50%] md:h-full object-cover w-full">
-            <img
-              src={selectedPost?.image}
-              alt="post_img"
-              className="w-auto h-full object-center object-cover"
-            />
+            <Carousel slides={selectedPost?.images} />
           </div>
           <div className="md:w-[55%] w-full h-full flex flex-col">
             <div className="md:flex hidden items-center justify-between p-4 md:border-b border-gray-300">

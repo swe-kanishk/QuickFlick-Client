@@ -43,7 +43,7 @@ function Home() {
    Object.keys(unreadMessages).filter((userId) => unreadMessages[userId] > 0);
 
   return (
-    <div  className={`flex flex-col ${isDark ? 'bg-[#161616]' : 'bg-white'} h-screen overflow-scroll`}>
+    <div  className={`flex flex-col ${isDark ? 'bg-[#161616]' : 'bg-white'} h-screen md:flex-row overflow-scroll`}>
       <div className={`flex fixed items-center top-0 z-50 right-0 w-full px-3 pb-2 pt-3 justify-between md:hidden ${isDark ? 'bg-[#161616]' : 'bg-white'}`}>
         <Link to={`/profile/${user?._id}`} className='flex gap-2 items-start'>
           <div className='h-12 w-12 rounded-full relative'>
@@ -79,7 +79,7 @@ function Home() {
         </div>
       </div>
       <div className="flex-1 md:mt-0 mt-[70px] px-3 w-full flex flex-col justify-start border-r border-gray-300">
-        <div className='flex items-center justify-start py-3 overflow-x-scroll'>
+        <div className='flex items-center justify-start py-3 md:py-16 md:px-2 overflow-x-scroll'>
         <CreateStories user={user} />
         <Stories />
         </div>

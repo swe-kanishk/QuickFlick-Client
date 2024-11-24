@@ -4,9 +4,9 @@ import LeftSidebar from './LeftSidebar'
 
 function MainLayout() {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col md:flex-row'>
         <LeftSidebar />
-        <div className='pb-[60px] flex-1 overflow-hidden'>
+        <div className='pb-[60px] md:p-0 flex-1 overflow-hidden'>
           <Outlet />
         </div>
     </div>
