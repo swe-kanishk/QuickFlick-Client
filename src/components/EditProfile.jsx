@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { setAuthUser } from "@/redux/authSlice";
 
 function EditProfile() {
-  const { user } = useSelector((store) => store.auth);
+  const { user, isDark } = useSelector((store) => store.auth);
   const imageRef = useRef();
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState({
@@ -32,7 +32,10 @@ function EditProfile() {
 
   const fileChangeHandler = (e) => {
     const file = e.target.files?.[0];
-    if (file) setInput({ ...input, avatar: file });
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setInput({ ...input, avatar: previewUrl })
+    };
   };
 
   const selectChangeHandler = (value) => {
@@ -74,15 +77,14 @@ function EditProfile() {
       setLoading(false)
     }
   };
-
+  console.log(input.avatar)
   return (
-    <div className="flex max-w-3xl mx-auto py-8">
+    <div className={`flex w-full h-[calc(100vh-60px)] md:h-screen px-3 md:px-12 mx-auto md:py-8 py-4 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
       <section className="flex flex-col gap-6 w-full">
         <h1 className="font-semibold text-xl">Edit Profile</h1>
-        <div className="flex items-center justify-between bg-gray-100 py-2 px-3 rounded-xl">
-          <div className="flex items-center gap-3">
-            <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
-              <AvatarImage src={user?.avatar} alt="user-avatar" />
+            <div className="flex flex-col gap-3">
+            <Avatar className="w-[8rem] h-[8rem] mx-auto rounded-full overflow-hidden">
+              <AvatarImage src={input?.avatar} alt="user-avatar" />
               <AvatarFallback>
                 <img
                   src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
@@ -90,33 +92,26 @@ function EditProfile() {
                 />
               </AvatarFallback>
             </Avatar>
-            <div>
-              <h1 className="font-medium text-sm">{user?.username}</h1>
-              <span className="text-gray-500">
-                {user?.bio || "Bio here..."}
-              </span>
+            <button
+            onClick={() => imageRef?.current.click()}
+            className="bg-blue-500 text-white font-medium py-2 px-3 w-fit mx-auto rounded-lg"
+            >
+            Change Avatar
+          </button>
             </div>
-          </div>
           <input
             onChange={fileChangeHandler}
             type="file"
             ref={imageRef}
             className="hidden"
           />
-          <button
-            onClick={() => imageRef?.current.click()}
-            className="bg-blue-500 text-white font-medium py-2 px-3 rounded-lg"
-          >
-            Change photo
-          </button>
-        </div>
         <div>
           <h1 className="font-semibold text-xl mb-2">Bio</h1>
           <Textarea
             value={input.bio}
             onChange={(e) => setInput({ ...input, bio: e.target.value })}
             name="bio"
-            className="focus-visible:ring-transparent"
+            className={`focus-visible:ring-transparent ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}
           />
         </div>
         <div>
@@ -125,10 +120,10 @@ function EditProfile() {
             defaultValue={input.gender}
             onValueChange={selectChangeHandler}
           >
-            <SelectTrigger className="w-[180px] py-2 text-black">
+            <SelectTrigger className={`${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={`${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
               <SelectGroup>
                 <SelectItem value="female">Female</SelectItem>
                 <SelectItem value="male">Male</SelectItem>
@@ -145,7 +140,7 @@ function EditProfile() {
           ) : (
             <Button
               onClick={editProfileHandler}
-              className="w-fit bg-blue-500 hover:bg-blue-600"
+              className="w-fit bg-green-500 hover:bg-green-600"
             >
               submit
             </Button>

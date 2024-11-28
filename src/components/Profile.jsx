@@ -79,15 +79,17 @@ const Profile = React.memo(() => {
       toast.error(error.response.data.message);
     }
   };
+
+  console.log(userProfile)
   return (
     <div
-      className={`flex flex-col max-w-5xl h-[calc(100vh-60px)] mx-auto items-start ${
+      className={`flex flex-col max-w-5xl md:h-screen md:max-w-full h-[calc(100vh-60px)] mx-auto items-start ${
         isDark ? "bg-[#151515] text-white" : "bg-white text-black"
       } justify-start px-5 md:px-0 py-3`}
     >
       <div className="flex w-full flex-col items-start md:p-8">
-        <div className="md:grid flex-col w-full md:grid-cols-2 flex">
-          <span className="font-bold flex items-center gap-2 justify-between mb-5 text-lg ">
+        <div className="flex-col w-full flex">
+          <span className="font-bold flex  items-center gap-2 justify-between mb-5 text-lg ">
             <div className="flex items-center gap-2">
               <FaUser />
               {userProfile?.username}
@@ -112,7 +114,7 @@ const Profile = React.memo(() => {
               </AvatarFallback>
             </Avatar>
             <div className="flex items-center justify-evenly w-full gap-6 font-medium">
-              <p className="flex flex-col md:flex-row justify-center items-center">
+              <p className="flex flex-col md:flex-row gap-2 justify-center items-center">
                 <span className="font-medium">
                   {userProfile?.posts.length}{" "}
                 </span>
@@ -123,7 +125,7 @@ const Profile = React.memo(() => {
                   
                   updateViewList("followers", userProfile.followers, true)
                 }}
-                className="flex flex-col md:flex-row justify-center items-center"
+                className="flex flex-col md:flex-row gap-2 justify-center items-center"
               >
                 <span className="font-medium">
                   {userProfile?.follower.length}{" "}
@@ -135,7 +137,7 @@ const Profile = React.memo(() => {
                   
                   updateViewList("following", userProfile.following, true)
                 }}
-                className="flex flex-col md:flex-row justify-center items-center"
+                className="flex flex-col md:flex-row gap-2 justify-center items-center"
               >
                 <span className="font-medium">
                   {userProfile?.following.length}{" "}
@@ -194,7 +196,7 @@ const Profile = React.memo(() => {
         </div>
       </div>
       <div className="border-t border-gray-300 h-full w-full mx-auto">
-        <div className="flex justify-between w-[70%] md:w-1/2 mx-auto">
+        <div className="flex justify-between w-[70%] md:w-2/3 mx-auto">
           {["posts", "reels", "saved", "tagged"].map((tab) => (
             <span
               key={tab}
@@ -234,9 +236,9 @@ const Profile = React.memo(() => {
         </div>
         <div>
           <div>
-            {!userProfile?.posts.length ? (
+            {!userProfile?.posts?.length ? (
               <div className="flex flex-col min-h-[400px] items-center justify-center gap-3">
-                <span className="border-[1.5px] w-fit rounded-full p-4 border-black">
+                <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
                   <IoCameraOutline size={"2rem"} />
                 </span>
                 {isLoggedInUSerProfile ? (
@@ -269,7 +271,7 @@ const Profile = React.memo(() => {
                         className="aspect-square relative object-cover overflow-hidden"
                       >
                         <img
-                          src={post.image}
+                          src={post?.images[0]}
                           className="aspect-square object-cover"
                           alt=""
                         />
@@ -285,7 +287,7 @@ const Profile = React.memo(() => {
                             </button>
                           </div>
                         </div>
-                      </div>
+                      </div>                      
                     ))}
                   </div>
                 ) : (

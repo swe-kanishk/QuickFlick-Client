@@ -46,7 +46,7 @@ function ChatPage() {
   const { unreadMessages } = useSelector(store => store.chat);
 
   return (
-    <div className={`flex ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} h-[calc(100vh-60px)]`}>
+    <div className={`flex ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} h-[calc(100vh-60px)] md:h-screen`}>
       <section className="w-full md:w-1/4 my-8">
         <h1 className="font-semibold mb-4 flex items-center gap-2 px-3 text-xl"><FaUser /> {user?.username}</h1>
         <hr className="mb-4 text-gray-300" />
@@ -89,7 +89,7 @@ function ChatPage() {
         </div>
       </section>
       {selectedUser ? (
-        <section className={`flex-1 w-full pb-[60px] absolute border-l ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} flex flex-col border-gray-300 h-full`}>
+        <section className={`flex-1  w-full pb-[60px] md:pb-0 md:relative absolute border-l ${isDark ? 'bg-[#151515] text-white' : 'bg-white text-black'} flex flex-col border-gray-300 h-full`}>
           <div className={`flex gap-3 items-center px-3 py-3 border-b border-gray-300 sticky top-0 ${isDark ? 'bg-black' : 'bg-white'}`}>
             <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
               <AvatarImage

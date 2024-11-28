@@ -43,13 +43,13 @@ function Notifications() {
       console.error("Failed to mark notifications as read:", error);
     }
   })();
-
+  console.log(Notifications)
   return (
-    <div className={`p-3 flex h-[calc(100vh-60px)] flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
+    <div className={`p-3 flex h-[calc(100vh-60px)] md:h-screen flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
         <div className="border-b border-gray-200">
             <p className="text-xl my-3 font-semibold flex items-center gap-2"><FaRegBell className="rotate-[-30deg] font-semibold" /> Notifications </p>
         </div>
-      {Notifications &&
+      {Notifications?.length ?
         Notifications?.map((notification) => {
           return (
             <div key={notification?._id} className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
@@ -102,7 +102,9 @@ function Notifications() {
                 </div>
               </div>
           );
-        })}
+        }) : (
+          <div className="text-xl font-semibold my-auto mx-auto">No Notifcations</div>
+        )}
     </div>
   );
 }
