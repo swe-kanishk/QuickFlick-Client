@@ -241,7 +241,7 @@ function LeftSidebar() {
           })}
         </ul>
       </div>
-      <CreatePost open={open} setOpen={setOpen} />
+      <CreateDialog open={open} setOpen={setOpen} />
     </>
   );
 }

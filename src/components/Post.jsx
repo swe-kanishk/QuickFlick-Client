@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { BsChat } from "react-icons/bs";
-import { PiPaperPlaneTilt } from "react-icons/pi";
+import { PiPaperPlaneTilt, PiSpeakerSimpleHighFill, PiSpeakerSimpleSlashFill } from "react-icons/pi";
 import { FaLinkedin, FaRegBookmark, FaRegCopy } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +33,7 @@ import {
   FaLink,
 } from "react-icons/fa";
 import PostActions from "./PostActions";
+import AudioPlayer from "./AudioPlayer";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -211,7 +212,7 @@ function Post({ post }) {
   return (
     <>
       <div
-        className={`mt-4 w-full px-5 py-6 rounded-[2rem] ${
+        className={`mt-4 w-full relative px-5 py-6 rounded-[2rem] ${
           isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
         } max-w-md mx-auto`}
         onClick={handleDoubleTap}
@@ -291,6 +292,7 @@ function Post({ post }) {
   
         <p className="my-5 mx-2">{post.caption}</p>
         <div className="my-5 relative rounded-[1rem] overflow-hidden">
+          <AudioPlayer post={post} />
           <Carousel slides={post.images} />
           {showHeart && (
             <IoMdHeart

@@ -14,15 +14,8 @@ import CreateBlogPost from "./CreateBlogPost";
 
 function CreateDialog({ open, setOpen }) {
   const [showFullBio, setShowFullBio] = useState(false);
-
   const [currentStep, setCurrentStep] = useState(1); // Step state
   const [selectedOption, setSelectedOption] = useState(null);
-  const [caption, setCaption] = useState("");
-  const [music, setMusic] = useState(null);
-  const [collab, setCollab] = useState(false);
-  const [audioFile, setAudioFile] = useState(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
 
   const { user } = useSelector((store) => store.auth);
 
@@ -43,14 +36,12 @@ function CreateDialog({ open, setOpen }) {
     // Handle submit logic based on the selected option
     console.log({
       selectedOption,
-      caption,
-      music,
-      collab,
-      audioFile,
-      title,
-      content,
     });
     setOpen(false); // Close the dialog after submission
+  };
+
+  const toggleBioView = () => {
+    setShowFullBio((prev) => !prev);
   };
 
   return (
@@ -145,14 +136,27 @@ function CreateDialog({ open, setOpen }) {
           </div>
         )}
 
-        {currentStep === 2 && selectedOption === "Post" && <CreatePost
-              setCurrentStep={setCurrentStep} setOpen={setOpen}
-              /> 
-        }
-        {currentStep === 2 && 
-        selectedOption === "Upload Audio" && <UploadAudio  setCurrentStep={setCurrentStep} />
-        }
-        {currentStep === 2 &&  selectedOption === "Blog" && <CreateBlogPost  setCurrentStep={setCurrentStep} />}
+        {currentStep === 2 && selectedOption === "Post" && (
+          <CreatePost setCurrentStep={setCurrentStep} currentStep={currentStep} />
+        )}
+        {currentStep === 2 && selectedOption === "Upload Audio" && (
+          <UploadAudio setCurrentStep={setCurrentStep} />
+        )}
+        {currentStep === 2 && selectedOption === "Blog" && (
+          <CreateBlogPost setCurrentStep={setCurrentStep} />
+        )}
+
+        {currentStep === 3 && (
+          <div className="text-center">
+            <h2 className="font-semibold">Submission Successful!</h2>
+            <button
+              onClick={handleSubmit}
+              className="btn-primary mt-4 hover:bg-black hover:text-white"
+            >
+              Close
+            </button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

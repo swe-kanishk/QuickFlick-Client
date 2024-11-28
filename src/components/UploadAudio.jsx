@@ -1,51 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "./ui/button"; // Replace with your Button component or use a plain <button>.
 import { toast } from "sonner"; // Replace with your preferred toast library or alert.
 import axios from "axios";
+import { Plus, Upload } from "lucide-react"; // Assuming you're using Lucide Icons for Plus and Upload.
+import { useDropzone } from "react-dropzone"; // Import react-dropzone
 
 const UploadAudio = () => {
-  const [audio, setAudio] = useState(null); // Store the audio file
-  const [audioName, setAudioName] = useState(""); // Store audio name
+  const [files, setFiles] = useState({ audio: null });
   const [caption, setCaption] = useState(""); // Store caption
   const [loading, setLoading] = useState(false); // Loading state
 
-  // Handle audio file selection
-  const handleAudioChange = (e) => {
-    const selectedAudio = e.target.files[0];
-    if (!selectedAudio) {
-      toast.error("Please select an audio file.");
-      return;
-    }
-    setAudio(selectedAudio);
-  };
+  const audioInputRef = useRef(null); // Ref for audio input
 
   // Handle form submission
   const handleSubmit = async () => {
-    if (!audio) {
+    if (!files.audio) {
       toast.error("Please upload an audio file.");
-      return;
-    }
-    if (!audioName) {
-      toast.error("Please provide a name for the audio.");
       return;
     }
 
     const formData = new FormData();
     const token = localStorage.getItem("token");
 
-    formData.append("audio", audio);
-    formData.append("audioName", audioName);
+    formData.append("audio", files.audio);
     formData.append("caption", caption);
 
     try {
       setLoading(true);
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/audio/upload`,
+        `${import.meta.env.VITE_API_URL}/api/v1/post/addAudio`,
         formData,
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -62,42 +50,62 @@ const UploadAudio = () => {
 
   // Reset the form after successful submission
   const resetForm = () => {
-    setAudio(null);
-    setAudioName("");
+    setFiles({ audio: null });
     setCaption("");
   };
+
+  // Handle file drop
+  const onDrop = (acceptedFiles, rejectedFiles) => {
+    if (rejectedFiles.length > 0) {
+      toast.error("Only audio files are allowed.");
+      return;
+    }
+
+    const audioFile = acceptedFiles[0];
+    if (audioFile) {
+      setFiles({ audio: audioFile });
+    }
+  };
+
+  // Using react-dropzone for drag-and-drop functionality
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "audio/*", // Restrict to audio files only
+    multiple: false, // Only allow one file at a time
+    onDropRejected: () => {
+      toast.error("Please select a valid audio file.");
+    },
+  });
 
   return (
     <div className="flex flex-col items-center p-4 bg-gray-100 rounded-md">
       <h1 className="text-lg font-semibold mb-4">Upload Audio</h1>
 
-      {/* Audio Upload */}
-      <div className="mb-4 w-full">
-        <label htmlFor="audio-upload" className="block mb-2 font-medium">
-          Select Audio File:
-        </label>
-        <input
-          type="file"
-          id="audio-upload"
-          accept="audio/*"
-          onChange={handleAudioChange}
-          className="block w-full p-2 border rounded-md"
-        />
-      </div>
-
-      {/* Audio Name */}
-      <div className="mb-4 w-full">
-        <label htmlFor="audio-name" className="block mb-2 font-medium">
-          Audio Name:
-        </label>
-        <input
-          type="text"
-          id="audio-name"
-          value={audioName}
-          onChange={(e) => setAudioName(e.target.value)}
-          placeholder="Enter audio name"
-          className="block w-full p-2 border rounded-md"
-        />
+      {/* Drag and Drop Area */}
+      <div
+        {...getRootProps()}
+        className="flex items-center justify-center p-6 border-2 border-dashed border-zinc-700 rounded-lg cursor-pointer mb-4"
+        onClick={() => audioInputRef.current?.click()} // Clicking the drop zone also triggers the file input dialog
+      >
+        <input {...getInputProps()} ref={audioInputRef} className="hidden" />
+        <div className="text-center">
+          {files.audio ? (
+            <div className="space-y-2">
+              <div className="text-sm text-emerald-500">Audio selected:</div>
+              <div className="text-xs text-zinc-400">{files.audio.name.slice(0, 20)}</div>
+            </div>
+          ) : (
+            <>
+              <div className="p-3 bg-zinc-800 rounded-full inline-block mb-2">
+                <Upload className="h-6 w-6 text-zinc-400" />
+              </div>
+              <div className="text-sm text-zinc-400 mb-2">Drag and drop your audio file here</div>
+              <Button variant="outline" size="sm" className="text-xs">
+                Or choose file
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Caption */}
@@ -120,7 +128,7 @@ const UploadAudio = () => {
         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
         disabled={loading}
       >
-        {loading ? "Uploading..." : "Upload Audio"}
+        {loading ? "Uploading..." : "Upload Song"}
       </Button>
     </div>
   );

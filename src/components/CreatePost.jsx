@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
@@ -9,26 +9,40 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "@/redux/postSlice";
 
-function CreatePost({ open, setOpen }) {
-  const [files, setFiles] = useState([]);
+function CreatePost({ setCurrentStep, currentStep }) {
+  const [files, setFiles] = useState([]); // For images
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [audio, setAudio] = useState(null); // For audio
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector(store => store.auth);
-  const { posts } = useSelector(store => store.post);
+  const { user } = useSelector((store) => store.auth);
+  const { posts } = useSelector((store) => store.post);
   const imageRef = useRef();
+  const audioRef = useRef();
 
-  // Handle multiple file changes
+  // Handle image file changes
   const fileChangeHandler = async (e) => {
     const selectedFiles = e.target.files;
     if (selectedFiles.length > 0) {
       const newFiles = Array.from(selectedFiles);
       setFiles(newFiles);
 
-      // Generate preview URLs for each file
-      const previews = await Promise.all(newFiles.map(file => readFileAsDataURL(file)));
+      // Generate preview URLs for images
+      const previews = await Promise.all(
+        newFiles.map((file) => readFileAsDataURL(file))
+      );
       setImagePreviews(previews);
+    }
+  };
+
+  // Handle audio file change
+  const audioChangeHandler = (e) => {
+    const selectedAudio = e.target.files[0];
+    if (selectedAudio) {
+      setAudio(selectedAudio);
+      console.log(selectedAudio);
+      console.log(audio);
     }
   };
 
@@ -46,20 +60,36 @@ function CreatePost({ open, setOpen }) {
   // Handle post creation
   const createPostHandler = async (e) => {
     const formData = new FormData();
-    const token = localStorage.getItem('token');
 
-    formData.append("caption", caption);
-    
-    // Append all selected files to FormData
-    files.forEach(file => formData.append("images", file));
+    if (caption) {
+      formData.append("caption", caption);
+    }
+    // Append all selected image files to FormData
+    if (files) {
+      files.forEach((file) => formData.append("images", file));
+    }
+    // Append the audio file (if any) to FormData
+    if (audio) {
+      formData.append("audio", audio);
+    }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     try {
       setLoading(true);
 
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/post/addpost`, formData, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/post/addpost`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res.data.success) {
         dispatch(setPosts([res.data.post, ...posts]));
@@ -67,6 +97,7 @@ function CreatePost({ open, setOpen }) {
         setOpen(false);
         setFiles([]);
         setImagePreviews([]);
+        setAudio(null); // Clear the audio
         setCaption("");
       }
     } catch (error) {
@@ -77,8 +108,11 @@ function CreatePost({ open, setOpen }) {
   };
 
   return (
-    <Dialog open={open} >
-      <DialogContent className="max-w-[90%] sm:max-w-lg rounded-lg" onInteractOutside={() => setOpen(false)}>
+    <Dialog open={currentStep === 2}>
+      <DialogContent
+        className="max-w-[90%] sm:max-w-lg rounded-lg"
+        onInteractOutside={() => setCurrentStep(1)}
+      >
         <DialogHeader className="text-center font-semibold">
           Create New Post
         </DialogHeader>
@@ -103,8 +137,8 @@ function CreatePost({ open, setOpen }) {
           className="focus-visible:ring-transparent border-none"
           placeholder="Write a caption..."
         />
-        
-        {/* Display multiple image previews */}
+
+        {/* Display image previews */}
         {imagePreviews?.length > 0 && (
           <div className="w-full h-64 flex flex-wrap gap-2">
             {imagePreviews?.map((preview, index) => (
@@ -119,7 +153,17 @@ function CreatePost({ open, setOpen }) {
           </div>
         )}
 
-        {/* Hidden file input */}
+        {/* Display audio preview */}
+        {audio && (
+          <div className="mt-3">
+            <audio controls>
+              <source src={URL.createObjectURL(audio)} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
+
+        {/* Hidden file input for images */}
         <input
           ref={imageRef}
           type="file"
@@ -131,11 +175,26 @@ function CreatePost({ open, setOpen }) {
           onClick={() => imageRef.current.click()}
           className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] "
         >
-          Select from computer
+          Select Images
+        </Button>
+
+        {/* Hidden file input for audio */}
+        <input
+          ref={audioRef}
+          type="file"
+          className="hidden"
+          onChange={audioChangeHandler}
+          accept="audio/*"
+        />
+        <Button
+          onClick={() => audioRef.current.click()}
+          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] "
+        >
+          Select Audio
         </Button>
 
         {/* Button for posting */}
-        {imagePreviews?.length > 0 && (
+        {imagePreviews?.length > 0 || audio ? (
           loading ? (
             <Button>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -150,7 +209,7 @@ function CreatePost({ open, setOpen }) {
               Post
             </Button>
           )
-        )}
+        ) : null}
       </DialogContent>
     </Dialog>
   );
