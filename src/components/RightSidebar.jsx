@@ -8,15 +8,16 @@ import SuggestedUsers  from '../components/SuggestedUsers'
 function RightSidebar() {
   const {user, isDark} = useSelector(store => store.auth)
   return (
-    <div className={`w-[35%] hidden md:flex ${isDark ? 'bg-[#161616] text-white' : 'bg-white'} justify-center px-6`}>
+    <div className={`w-[35%] hidden lg:flex ${isDark ? 'bg-[#161616] text-white' : 'bg-white'} justify-center px-6`}>
       <div className='w-[90%] my-10'>
       <Link to={`/profile/${user?._id}`} className="flex items-center gap-2">
-          <Avatar className="w-8 h-8 rounded-full overflow-hidden">
+          <Avatar className="w-[8rem] rounded-full aspect-square object-cover overflow-hidden">
             <AvatarImage src={user?.avatar} alt="@shadcn" />
             <AvatarFallback>
               <img
                 src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
                 alt=""
+                className="w-[8rem] rounded-full aspect-square object-cover overflow-hidden"
               />
             </AvatarFallback>
           </Avatar>
