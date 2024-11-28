@@ -13,8 +13,8 @@ function ProtectedRoutes({children}) {
         if(user && !user.isVerified) {
             navigate("/verify-auth")
         }
-    }, [])
-  return <>{children}</>
+    }, [user, navigate])
+    return user ? children : null;
 }
 
 export default ProtectedRoutes
