@@ -16,7 +16,7 @@ const AudioPlayer = ({ post }) => {
     }
     setIsPlaying(!isPlaying);
   };
-
+  console.log(post)
   return (
     <div>
       <audio
@@ -32,7 +32,7 @@ const AudioPlayer = ({ post }) => {
         toggleAudio()
         e.stopPropagation()
       }} className={`absolute top-[4.5rem] left-[5px] p-4 ${
-        isDark ? "bg-[#f3f3f3] text-black" : "bg-[#212121] text-white"
+        isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
       } z-10 rounded-full`}>
         {isPlaying ? (
             <PiSpeakerSimpleHighFill /> // Icon when audio is playing

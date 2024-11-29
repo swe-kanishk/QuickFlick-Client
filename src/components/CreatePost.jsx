@@ -80,6 +80,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
     formData.append("audio", audio); // Append audio to FormData
   }
   formData.append("type", "post");
+
   try {
     setLoading(true); // Show loading indicator
 

@@ -295,10 +295,10 @@ function Post({ post }) {
             </DialogContent>
           </Dialog>
         </div>
-
+              {console.log(post)}
         {post?.type === "post" && (
           <>
-            <p className="my-5 mx-2">{post.caption}</p>
+            <p className="my-5 mx-2">{post?.caption}</p>
             {post?.audio && <AudioPlayer post={post} />}
             <div className="my-5 relative rounded-[1rem] overflow-hidden">
               <Carousel slides={post.images} />
