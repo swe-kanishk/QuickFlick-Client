@@ -119,7 +119,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         className="max-w-[90%] sm:max-w-lg rounded-lg"
         onInteractOutside={() => setCurrentStep(1)}
       >
-        <DialogHeader className="text-center font-semibold">
+        <DialogHeader className="text-center mx-auto font-semibold">
           Create New Post
         </DialogHeader>
         <div className="flex gap-3 items-center">
@@ -179,7 +179,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => imageRef.current.click()}
-          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf]"
+          className="w-fit mx-auto inline-block bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Images
         </Button>
@@ -194,7 +194,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => audioRef.current.click()}
-          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf]"
+          className="w-fit mx-auto inline-block bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Audio
         </Button>

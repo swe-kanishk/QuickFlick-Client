@@ -318,7 +318,7 @@ function Post({ post }) {
           post?.type === 'blog' && (
             <div className="flex flex-col gap-3 my-8 bg-transparent py-3 px-3 rounded-lg">
               <h1 className="font-bold">{post?.title}</h1>
-              <p className="font-medium text-gray-400">{post?.content}</p> 
+              <p className="font-medium text-gray-400" style={{ whiteSpace: "pre-wrap" }}>{post?.content}</p> 
             </div>
           )
         }
