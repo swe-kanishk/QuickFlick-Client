@@ -334,13 +334,13 @@ const Profile = React.memo(() => {
                   <AvatarImage
                     src={person?.avatar}
                     alt="img"
-                    className="h-12 w-12 aspect-square overflow-hidden rounded-full object-cover"
+                    className="h-12 aspect-square overflow-hidden rounded-full object-cover"
                   />
                   <AvatarFallback>
                     <img
                       src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
                       alt=""
-                      className="h-12 w-12 aspect-square rounded-full object-cover"
+                      className="h-12 aspect-square overflow-hidden rounded-full object-cover"
                     />
                   </AvatarFallback>
                 </Avatar>

@@ -34,6 +34,7 @@ import {
 } from "react-icons/fa";
 import PostActions from "./PostActions";
 import AudioPlayer from "./AudioPlayer";
+import AudioPostPlayer from "./AudioPostPlayer";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -289,10 +290,13 @@ function Post({ post }) {
             </DialogContent>
           </Dialog>
         </div>
-  
-        <p className="my-5 mx-2">{post.caption}</p>
+        
+        {
+          post?.type === 'post' && (<><p className="my-5 mx-2">{post.caption}</p>
+          {
+            post?.audio && <AudioPlayer post={post} />
+          }
         <div className="my-5 relative rounded-[1rem] overflow-hidden">
-          <AudioPlayer post={post} />
           <Carousel slides={post.images} />
           {showHeart && (
             <IoMdHeart
@@ -300,7 +304,24 @@ function Post({ post }) {
               className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
             />
           )}
-        </div>
+        </div></>)
+        }
+        {
+          post?.type === 'audio' && (
+            <div>
+              <p className="my-5 mx-2">{post.caption}</p>
+              <AudioPostPlayer audioSrc={post?.audio} />
+            </div>
+          )
+        }
+        {
+          post?.type === 'blog' && (
+            <div className="flex flex-col gap-3 my-8 bg-transparent py-3 px-3 rounded-lg">
+              <h1 className="font-bold">{post?.title}</h1>
+              <p className="font-medium text-gray-400">{post?.content}</p> 
+            </div>
+          )
+        }
         <PostActions
           liked={liked}
           onLikeToggle={likeOrDislikeHandler}

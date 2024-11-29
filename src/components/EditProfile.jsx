@@ -26,6 +26,7 @@ function EditProfile() {
     bio: user?.bio,
     gender: user?.gender,
   });
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,8 +34,8 @@ function EditProfile() {
   const fileChangeHandler = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setInput({ ...input, avatar: previewUrl })
+      setPreviewUrl(URL.createObjectURL(file));
+      setInput({ ...input, avatar: file })
     };
   };
 
@@ -84,7 +85,7 @@ function EditProfile() {
         <h1 className="font-semibold text-xl">Edit Profile</h1>
             <div className="flex flex-col gap-3">
             <Avatar className="w-[8rem] h-[8rem] mx-auto rounded-full overflow-hidden">
-              <AvatarImage src={input?.avatar} alt="user-avatar" />
+              <AvatarImage src={previewUrl || input?.avatar} alt="user-avatar" />
               <AvatarFallback>
                 <img
                   src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"

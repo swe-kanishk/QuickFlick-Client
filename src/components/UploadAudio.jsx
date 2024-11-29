@@ -11,7 +11,7 @@ const UploadAudio = () => {
   const [loading, setLoading] = useState(false); // Loading state
 
   const audioInputRef = useRef(null); // Ref for audio input
-
+  console.log(files)
   // Handle form submission
   const handleSubmit = async () => {
     if (!files.audio) {
@@ -20,21 +20,21 @@ const UploadAudio = () => {
     }
 
     const formData = new FormData();
-    const token = localStorage.getItem("token");
 
-    formData.append("audio", files.audio);
-    formData.append("caption", caption);
+    // Add the audio file and caption to the FormData
+    formData.append("audio", files.audio); 
+    formData.append("caption", caption); 
+    formData.append("type", "audio"); // Adding the type field as 'audio'
 
     try {
       setLoading(true);
+      console.log(files.audio)
+      console.log(formData.type)
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/post/addAudio`,
+        `${import.meta.env.VITE_API_URL}/api/v1/post/addpost`, // Make sure this is the correct endpoint for audio posts
         formData,
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
         }
       );
       if (res.data.success) {
@@ -87,7 +87,7 @@ const UploadAudio = () => {
         className="flex items-center justify-center p-6 border-2 border-dashed border-zinc-700 rounded-lg cursor-pointer mb-4"
         onClick={() => audioInputRef.current?.click()} // Clicking the drop zone also triggers the file input dialog
       >
-        <input {...getInputProps()} ref={audioInputRef} className="hidden" />
+        <input {...getInputProps()} ref={audioInputRef} name="audio" className="hidden" />
         <div className="text-center">
           {files.audio ? (
             <div className="space-y-2">
@@ -119,6 +119,7 @@ const UploadAudio = () => {
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Enter caption"
           className="block w-full p-2 border rounded-md"
+          name="caption"
         ></textarea>
       </div>
 

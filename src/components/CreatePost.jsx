@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
@@ -41,8 +41,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
     const selectedAudio = e.target.files[0];
     if (selectedAudio) {
       setAudio(selectedAudio);
-      console.log(selectedAudio);
-      console.log(audio);
+      console.log("Audio file selected:", selectedAudio);
     }
   };
 
@@ -59,54 +58,61 @@ function CreatePost({ setCurrentStep, currentStep }) {
 
   // Handle post creation
   const createPostHandler = async (e) => {
-    const formData = new FormData();
+  // e.preventDefault(); // Prevent default form submission
 
-    if (caption) {
-      formData.append("caption", caption);
-    }
-    // Append all selected image files to FormData
-    if (files) {
-      files.forEach((file) => formData.append("images", file));
-    }
-    // Append the audio file (if any) to FormData
-    if (audio) {
-      formData.append("audio", audio);
-    }
+  // Create a new FormData object
+  const formData = new FormData();
 
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
+  // Append the caption (if present)
+  if (caption) {
+    formData.append("caption", caption);
+  }
 
-    try {
-      setLoading(true);
+  // Append image files if they exist
+  if (files.length > 0) {
+    files.forEach((file) => {
+      formData.append("images", file); // Append each image to FormData
+    });
+  }
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/post/addpost`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  // Append audio file if it exists
+  if (audio) {
+    formData.append("audio", audio); // Append audio to FormData
+  }
+  formData.append("type", "post");
+  try {
+    setLoading(true); // Show loading indicator
 
-      if (res.data.success) {
-        dispatch(setPosts([res.data.post, ...posts]));
-        toast.success(res.data.message);
-        setOpen(false);
-        setFiles([]);
-        setImagePreviews([]);
-        setAudio(null); // Clear the audio
-        setCaption("");
+    // Send the POST request with FormData to the backend API
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/v1/post/addpost`,
+      formData, // Send the FormData with files
+      {
+        
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true, // Include credentials (cookies)
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    );
 
+    // Check if the response is successful
+    if (res.data.success) {
+      dispatch(setPosts([res.data.post, ...posts])); // Update Redux store with new post
+      toast.success(res.data.message); // Show success toast
+      setFiles([]); // Reset file inputs
+      setImagePreviews([]); // Clear image previews
+      setAudio(null); // Reset audio
+      setCaption(""); // Clear caption
+      setCurrentStep(1); // Move to the next step
+    }
+  } catch (error) {
+    console.error("Error creating post:", error); // Log the error
+    toast.error(error.response?.data?.message || "Something went wrong"); // Show error message
+  } finally {
+    setLoading(false); // Hide loading indicator
+  }
+};
+
+  
   return (
     <Dialog open={currentStep === 2}>
       <DialogContent
@@ -173,7 +179,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => imageRef.current.click()}
-          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] "
+          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Images
         </Button>
@@ -188,7 +194,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => audioRef.current.click()}
-          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] "
+          className="w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Audio
         </Button>

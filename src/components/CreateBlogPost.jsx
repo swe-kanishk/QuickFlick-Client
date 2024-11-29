@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Button } from "./ui/button"; // Replace with your Button component or use a plain <button>.
-import { toast } from "sonner"; // Replace with your preferred toast library or alert.
+import { Button } from "./ui/button"; // Assuming you're using a custom Button component
+import { toast } from "sonner"; // Assuming you're using Sonner for toasts
 import axios from "axios";
 
 const CreateBlogPost = () => {
-  const [title, setTitle] = useState(""); // Store title
-  const [content, setContent] = useState(""); // Store content of the blog (joke, poem, etc.)
-  const [caption, setCaption] = useState(""); // Store caption (optional)
+  const [title, setTitle] = useState(""); // Store the blog title
+  const [content, setContent] = useState(""); // Store the content of the blog
   const [loading, setLoading] = useState(false); // Loading state
 
   // Handle form submission
@@ -19,15 +18,16 @@ const CreateBlogPost = () => {
     const formData = {
       title,
       content,
-      caption,
+      type: "blog"
     };
 
     const token = localStorage.getItem("token");
+    // formData.append("type", "blog");
 
     try {
       setLoading(true);
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/blog/create`,
+        `${import.meta.env.VITE_API_URL}/api/v1/post/addpost`,
         formData,
         {
           headers: {
@@ -46,11 +46,10 @@ const CreateBlogPost = () => {
     }
   };
 
-  // Reset form after successful submission
+  // Reset the form after a successful submission
   const resetForm = () => {
     setTitle("");
     setContent("");
-    setCaption("");
   };
 
   return (
@@ -83,23 +82,8 @@ const CreateBlogPost = () => {
           onChange={(e) => setContent(e.target.value)}
           placeholder="Write your post here"
           className="block w-full p-2 border rounded-md"
-          rows="6"
+          rows={6}
         ></textarea>
-      </div>
-
-      {/* Optional Caption */}
-      <div className="mb-4 w-full">
-        <label htmlFor="caption" className="block mb-2 font-medium">
-          Caption (Optional):
-        </label>
-        <input
-          type="text"
-          id="caption"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          placeholder="Enter an optional caption"
-          className="block w-full p-2 border rounded-md"
-        />
       </div>
 
       {/* Submit Button */}

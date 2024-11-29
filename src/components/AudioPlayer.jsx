@@ -31,8 +31,8 @@ const AudioPlayer = ({ post }) => {
       <button onClick={(e) => {
         toggleAudio()
         e.stopPropagation()
-      }} className={`absolute top-[-8px] left-[-8px] p-4 ${
-        isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
+      }} className={`absolute top-[4.5rem] left-[5px] p-4 ${
+        isDark ? "bg-[#f3f3f3] text-black" : "bg-[#212121] text-white"
       } z-10 rounded-full`}>
         {isPlaying ? (
             <PiSpeakerSimpleHighFill /> // Icon when audio is playing

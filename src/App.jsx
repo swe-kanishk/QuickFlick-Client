@@ -46,7 +46,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ViewPost from "./components/ViewPost";
 import CreatePost from "./components/CreatePost";
 import CreateStory from "./components/CreateStory";
-import CreateReel from "./components/CreateReel";
+import CreateReel from "./components/CreateShort";
 import UploadAudio from "./components/UploadAudio";
 import CreateBlogPost from "./components/CreateBlogPost";
 

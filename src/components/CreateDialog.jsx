@@ -11,6 +11,7 @@ import { MdEditDocument } from "react-icons/md";
 import CreatePost from "./CreatePost";
 import UploadAudio from "./UploadAudio";
 import CreateBlogPost from "./CreateBlogPost";
+import CreateShort from "./CreateShort";
 
 function CreateDialog({ open, setOpen }) {
   const [showFullBio, setShowFullBio] = useState(false);
@@ -144,6 +145,9 @@ function CreateDialog({ open, setOpen }) {
         )}
         {currentStep === 2 && selectedOption === "Blog" && (
           <CreateBlogPost setCurrentStep={setCurrentStep} />
+        )}
+        {currentStep === 2 && selectedOption === "Shorts" && (
+          <CreateShort setCurrentStep={setCurrentStep} currentStep={currentStep} />
         )}
 
         {currentStep === 3 && (
