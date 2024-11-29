@@ -5,7 +5,11 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { BsChat } from "react-icons/bs";
-import { PiPaperPlaneTilt, PiSpeakerSimpleHighFill, PiSpeakerSimpleSlashFill } from "react-icons/pi";
+import {
+  PiPaperPlaneTilt,
+  PiSpeakerSimpleHighFill,
+  PiSpeakerSimpleSlashFill,
+} from "react-icons/pi";
 import { FaLinkedin, FaRegBookmark, FaRegCopy } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,6 +44,7 @@ function Post({ post }) {
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
   const { user, isDark } = useSelector((store) => store.auth);
+  const [showFullContent, setShowFullContent] = useState(false);
   const { posts } = useSelector((store) => store.post);
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
@@ -195,7 +200,9 @@ function Post({ post }) {
   };
 
   const copyLink = () => {
-    navigator.clipboard.writeText(`${window.location.href}viewPost/${post?._id}`);
+    navigator.clipboard.writeText(
+      `${window.location.href}viewPost/${post?._id}`
+    );
     toast.success("Link copied to clipboard!");
   };
 
@@ -254,9 +261,7 @@ function Post({ post }) {
             <DialogTrigger asChild>
               <MoreHorizontal className="cursor-pointer" />
             </DialogTrigger>
-            <DialogContent
-              className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white"
-            >
+            <DialogContent className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white">
               {post?.author?._id !== user?._id &&
                 (user?.following?.includes(post?.author?._id) ? (
                   <Button
@@ -290,38 +295,58 @@ function Post({ post }) {
             </DialogContent>
           </Dialog>
         </div>
-        
-        {
-          post?.type === 'post' && (<><p className="my-5 mx-2">{post.caption}</p>
-          {
-            post?.audio && <AudioPlayer post={post} />
-          }
-        <div className="my-5 relative rounded-[1rem] overflow-hidden">
-          <Carousel slides={post.images} />
-          {showHeart && (
-            <IoMdHeart
-              size={50}
-              className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
-            />
-          )}
-        </div></>)
-        }
-        {
-          post?.type === 'audio' && (
-            <div>
-              <p className="my-5 mx-2">{post.caption}</p>
-              <AudioPostPlayer audioSrc={post?.audio} />
+
+        {post?.type === "post" && (
+          <>
+            <p className="my-5 mx-2">{post.caption}</p>
+            {post?.audio && <AudioPlayer post={post} />}
+            <div className="my-5 relative rounded-[1rem] overflow-hidden">
+              <Carousel slides={post.images} />
+              {showHeart && (
+                <IoMdHeart
+                  size={50}
+                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+                />
+              )}
             </div>
-          )
-        }
-        {
-          post?.type === 'blog' && (
-            <div className="flex flex-col gap-3 my-8 bg-transparent py-3 px-3 rounded-lg">
-              <h1 className="font-bold">{post?.title}</h1>
-              <p className="font-medium text-gray-400" style={{ whiteSpace: "pre-wrap" }}>{post?.content}</p> 
+          </>
+        )}
+        {post?.type === "audio" && (
+          <div>
+            <p className="my-5 mx-2">{post.caption}</p>
+            <AudioPostPlayer audioSrc={post?.audio} />
+          </div>
+        )}
+        {post?.type === "blog" && (
+          <div className="flex flex-col gap-3 my-8 bg-transparent py-3 px-3 rounded-lg">
+            <h1 className="font-bold">{post?.title}</h1>
+            <div className="relative">
+              <p
+                className={`text-gray-500 inline-block cursor-pointer ${
+                  showFullContent ? "" : "max-h-[10.7em] overflow-hidden" // 10 lines visible
+                }`}
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: showFullContent ? "none" : 20, // Clamp to 10 lines
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "pre-wrap"
+                }}
+              >
+                {post?.content}
+              </p>
+              {post?.content?.length > 150 && (
+                <button
+                  onClick={() => setShowFullContent(!showFullContent)}
+                  className="text-blue-500 text-[15px] relative bottom-0"
+                >
+                  {showFullContent ? "See less" : "See more"}
+                </button>
+              )}
             </div>
-          )
-        }
+          </div>
+        )}
         <PostActions
           liked={liked}
           onLikeToggle={likeOrDislikeHandler}
@@ -334,8 +359,10 @@ function Post({ post }) {
           isSaved={user?.saved?.includes(post._id)}
           onSaveToggle={savePostHandler}
         />
-  
-        <span className="font-medium block mt-1">{post.likes.length} likes</span>
+
+        <span className="font-medium block mt-1">
+          {post.likes.length} likes
+        </span>
         {comments.length > 0 && (
           <span
             onClick={() => {
@@ -378,34 +405,42 @@ function Post({ post }) {
           )}
         </div>
       </div>
-  
+
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent
-          className="p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg"
-        >
+        <DialogContent className="p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg">
           <h2 className="text-lg font-semibold mb-2">Share this Post</h2>
           <div className="flex justify-evenly gap-8 mb-2">
-            <FacebookShareButton url={`${window.location.href}viewPost/${post?._id}`}>
+            <FacebookShareButton
+              url={`${window.location.href}viewPost/${post?._id}`}
+            >
               <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
                 <FaFacebookF className="h-5 w-5 text-white" />
               </span>
             </FacebookShareButton>
-            <EmailShareButton url={`${window.location.href}viewPost/${post?._id}`}>
+            <EmailShareButton
+              url={`${window.location.href}viewPost/${post?._id}`}
+            >
               <span className="flex items-center justify-center p-3 overflow-hidden aspect-square bg-black rounded-full">
                 <FaEnvelope className="h-5 w-5 text-white" />
               </span>
             </EmailShareButton>
-            <TelegramShareButton url={`${window.location.href}viewPost/${post?._id}`}>
+            <TelegramShareButton
+              url={`${window.location.href}viewPost/${post?._id}`}
+            >
               <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
                 <FaTelegramPlane className="h-6 w-6 text-white" />
               </span>
             </TelegramShareButton>
-            <WhatsappShareButton url={`${window.location.href}viewPost/${post?._id}`}>
+            <WhatsappShareButton
+              url={`${window.location.href}viewPost/${post?._id}`}
+            >
               <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-green-600 rounded-full">
                 <FaWhatsapp className="h-6 w-6 text-white" />
               </span>
             </WhatsappShareButton>
-            <LinkedinShareButton url={`${window.location.href}viewPost/${post?._id}`}>
+            <LinkedinShareButton
+              url={`${window.location.href}viewPost/${post?._id}`}
+            >
               <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
                 <FaLinkedin className="h-6 w-6 text-white" />
               </span>
@@ -430,6 +465,6 @@ function Post({ post }) {
       </Dialog>
     </>
   );
-}  
+}
 
 export default Post;
