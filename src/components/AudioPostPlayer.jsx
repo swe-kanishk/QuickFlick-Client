@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaPlay, FaPause } from 'react-icons/fa'; // Import play/pause icons
+import { FaPlay, FaPause, FaMusic } from 'react-icons/fa'; // Import play/pause icons
 import AudioVisualizer from './AudioVisulaizer';
 
 const AudioPlayer = ({ audioSrc }) => {
@@ -68,7 +68,14 @@ const AudioPlayer = ({ audioSrc }) => {
 
   return (
     <div className='flex flex-col gap-3'>
-        <AudioVisualizer audioSrc={audioSrc} isPlaying={isPlaying} />
+      <div className='rounded-full mx-auto  bg-gradient-to-br from-[#ff48b6] via-[#4673ef] to-[#ffffff] overflow-hidden relative h-20 w-20'>
+      <AudioVisualizer audioSrc={audioSrc} isPlaying={isPlaying} />
+      <div className='h-16 w-16 rounded-full p-1  absolute mx-auto left-2 flex items-center bg-black justify-center top-2'>
+        <span className='h-8 w-8 z-20 flex items-center justify-center text-white bg-gradient-to-br from-teal-800  to-green-500 rounded-full '>
+          <FaMusic className={`${isPlaying ? 'animate-spin duration-[3s]' : ''} z-20 absolute top-6 left-6`} />
+        </span>
+      </div>
+      </div>
     <div className="audio-player flex justify-between gap-3">
       {/* Audio element */}
       <audio ref={audioRef} src={audioSrc} />

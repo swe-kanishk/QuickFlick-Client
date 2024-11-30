@@ -18,7 +18,7 @@ const AudioVisualizer = ({ audioSrc, isPlaying }) => {
       audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
         // Create analyser
         const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 128;  // Reduced fftSize for coarser resolution
+        analyser.fftSize = 64;  // Reduced fftSize for coarser resolution
         const frequencyBufferLength = analyser.frequencyBinCount;
         const frequencyData = new Uint8Array(frequencyBufferLength);
 
@@ -97,29 +97,19 @@ const AudioVisualizer = ({ audioSrc, isPlaying }) => {
 
         // Set the color based on frequency value
         let color = 'white';
-        if (value < 85) {
-          color = 'rgb(0, 255, 0)'; // Green
-        } else if (value < 170) {
-          color = 'rgb(255, 0, 0)'; // Red
-        } else {
-          color = 'rgb(0, 0, 255)'; // Blue
-        }
+        // if (value < 85) {
+        //   color = 'green'; // Green
+        // } else if (value < 170) {
+        //   color = 'red'; // Red
+        // } else {
+        //   color = 'blue'; // Blue
+        // }
 
         // Draw the bar with the chosen color and height
         canvasContext.fillStyle = color;
         canvasContext.fillRect(
           i * barWidth,
           canvas.height - barHeight,  // Start from the bottom of the canvas and go upwards
-          barWidth - 1,
-          barHeight
-        );
-
-        // Draw the black border around the bar
-        canvasContext.strokeStyle = 'black';
-        canvasContext.lineWidth = 1;
-        canvasContext.strokeRect(
-          i * barWidth,
-          canvas.height - barHeight,
           barWidth - 1,
           barHeight
         );
@@ -130,7 +120,7 @@ const AudioVisualizer = ({ audioSrc, isPlaying }) => {
   }
 
   return (
-    <canvas ref={canvasRef} className='h-[5rem]' />
+    <canvas ref={canvasRef} className="h-[5rem] z-10 absolute w-[5rem] rounded-full" />
   );
 };
 
