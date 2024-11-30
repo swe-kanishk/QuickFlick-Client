@@ -18,7 +18,6 @@ import { FaRegBookmark } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { FaComment, FaUser } from "react-icons/fa6";
 import { setAuthUser, setUserProfile } from "@/redux/authSlice";
-import { ImExit } from "react-icons/im";
 import { toast } from "sonner";
 import axios from "axios";
 import { IoIosCloseCircleOutline, IoMdGrid } from "react-icons/io";
@@ -28,6 +27,7 @@ import { BsFileEarmarkMusic, BsFillCollectionFill } from "react-icons/bs";
 import { MdEditDocument } from "react-icons/md";
 import { SiAudiomack, SiYoutubeshorts } from "react-icons/si";
 import { RiVoiceprintFill } from "react-icons/ri";
+import Settings from "./Settings";
 
 // Lazy load CreatePost component
 const CreatePost = lazy(() => import("./CreatePost"));
@@ -68,21 +68,7 @@ const Profile = React.memo(() => {
     };
   }, [dispatch]);
 
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/user/logout`
-      );
-      if (res.data.success) {
-        dispatch(setAuthUser(null));
-        navigate("/login");
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
-  };
+  
   const category = useMemo(() => {
     const categories = {
       audio: [],
@@ -102,12 +88,15 @@ const Profile = React.memo(() => {
     return categories;
   }, [userProfile?.posts]);
 
+  const [openSettings, setOpenSettings] = useState(false)
+
   return (
     <div
       className={`flex flex-col max-w-5xl md:h-screen md:max-w-full h-[calc(100vh-60px)] mx-auto items-start ${
         isDark ? "bg-[#151515] text-white" : "bg-white text-black"
       } justify-start px-5 md:px-0 py-3`}
     >
+      <Settings openSettings={openSettings} setOpenSettings={setOpenSettings} />
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="flex-col w-full flex">
           <span className="font-bold flex  items-center gap-2 justify-between mb-5 text-lg ">
@@ -115,10 +104,7 @@ const Profile = React.memo(() => {
               <FaUser />
               {userProfile?.username}
             </div>
-            <ImExit
-              onClick={() => logoutHandler()}
-              className="cursor-pointer h-5 w-5 text-blue-500"
-            />
+                    <TbSettingsFilled onClick={() => setOpenSettings(!openSettings)} size={"24px"} className="cursor-pointer" />
           </span>
           <section className="flex items-center justify-start gap-8 md:justify-center">
             <Avatar className="min-w-[5rem] min-h-[5rem] rounded-full aspect-square object-cover overflow-hidden">
@@ -193,9 +179,6 @@ const Profile = React.memo(() => {
                     } ml-1 mr-2 rounded-md font-medium`}
                   >
                     View archive
-                  </button>
-                  <button className="w-1/5">
-                    <TbSettingsFilled size={"24px"} />
                   </button>
                 </>
               ) : isFollowing ? (
