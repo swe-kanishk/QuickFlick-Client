@@ -317,8 +317,16 @@ function Post({ post }) {
             <AudioPostPlayer audioSrc={post?.audio} />
           </div>
         )}
+        {post?.type === "short" && (
+          <div>
+            <p className="my-5 mx-2">{post?.caption}</p>
+            <div className="flex items-center justify-center max-h-[25rem] overflow-hidden bg-transparent">
+            <video src={post?.video} autoPlay loop={3} muted controls className="w-full rounded-lg"></video>
+            </div>
+          </div>
+        )}
         {post?.type === "blog" && (
-          <div className="flex flex-col gap-3 my-8 bg-transparent py-3 px-3 rounded-lg">
+          <div className="flex flex-col gap-3 mt-4 bg-transparent py-3 px-3 rounded-lg">
             <h1 className="font-bold">{post?.title}</h1>
             <div className="relative">
               <p
@@ -339,9 +347,9 @@ function Post({ post }) {
               {post?.content?.length > 150 && (
                 <button
                   onClick={() => setShowFullContent(!showFullContent)}
-                  className="text-blue-500 text-[15px] relative bottom-0"
+                  className="text-blue-500 text-[15px] relative bottom-1"
                 >
-                  {showFullContent ? "See less" : "See more"}
+                  {showFullContent ? "See less" : "...See more"}
                 </button>
               )}
             </div>

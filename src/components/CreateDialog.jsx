@@ -143,10 +143,10 @@ function CreateDialog({ open, setOpen }) {
         <CreatePost setCurrentStep={setCurrentStep} currentStep={currentStep} />
       )}
       {currentStep === 2 && selectedOption === "Upload Audio" && (
-        <UploadAudio setCurrentStep={setCurrentStep} />
+        <UploadAudio setCurrentStep={setCurrentStep} currentStep={currentStep} />
       )}
       {currentStep === 2 && selectedOption === "Blog" && (
-        <CreateBlogPost setCurrentStep={setCurrentStep} />
+        <CreateBlogPost setCurrentStep={setCurrentStep} currentStep={currentStep} />
       )}
       {currentStep === 2 && selectedOption === "Shorts" && (
         <CreateShort

@@ -171,7 +171,8 @@ function CreatePost({ setCurrentStep, currentStep }) {
         )}
 
         {/* Hidden file input for images */}
-        <input
+      <div className="flex items-center justify-between w-full">
+      <input
           ref={imageRef}
           type="file"
           className="hidden"
@@ -180,7 +181,7 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => imageRef.current.click()}
-          className="w-fit mx-auto inline-block bg-[#0095F6] hover:bg-[#258bcf]"
+          className="w-fit bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Images
         </Button>
@@ -195,10 +196,11 @@ function CreatePost({ setCurrentStep, currentStep }) {
         />
         <Button
           onClick={() => audioRef.current.click()}
-          className="w-fit mx-auto inline-block bg-[#0095F6] hover:bg-[#258bcf]"
+          className="w-fit bg-[#0095F6] hover:bg-[#258bcf]"
         >
           Select Audio
         </Button>
+      </div>
 
         {/* Button for posting */}
         {imagePreviews?.length > 0 || audio ? (
