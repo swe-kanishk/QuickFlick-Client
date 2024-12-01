@@ -326,7 +326,7 @@ function Post({ post }) {
           <div>
             <p className="my-5 mx-2">{post?.caption}</p>
             <div className="flex items-center justify-center max-h-[25rem] overflow-hidden bg-transparent">
-            <video src={post?.video} autoPlay loop={3} muted controls className="w-full rounded-lg"></video>
+            <video src={post?.video} loop={3} muted controls className="w-full rounded-lg"></video>
             {showHeart && (
                 <IoMdHeart
                   size={50}

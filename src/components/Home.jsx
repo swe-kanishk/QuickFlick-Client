@@ -79,12 +79,12 @@ function Home() {
         </div>
       </div>
       <div className="flex-1 md:mt-0 mt-[70px] px-3 w-full flex flex-col justify-start border-r border-gray-300">
-        <div className='flex items-center justify-start py-3 md:py-16 md:px-2 overflow-x-scroll'>
+        <div className='flex items-center md:hidden justify-start py-3  md:px-2 overflow-x-scroll'>
         <CreateStories user={user} />
         <Stories />
         </div>
        <Posts />
-        <Outlet />
+        {/* <Outlet /> */}
       </div>
       <RightSidebar />
     </div>

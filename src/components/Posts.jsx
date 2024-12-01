@@ -5,10 +5,12 @@ import { setPosts, appendPosts } from '@/redux/postSlice';
 import axios from 'axios';
 import { Loader, Loader2, Loader2Icon } from 'lucide-react'; // Import Loader2 from lucide-react
 import { toast } from "sonner";
+import Stories from './Stories';
+import CreateStories from './CreateStories';
 
 function Posts() {
   const { posts } = useSelector((store) => store.post);
-  const { isDark } = useSelector((store) => store.auth);
+  const { isDark, user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
 
   const [page, setPage] = useState(1);
@@ -110,6 +112,10 @@ function Posts() {
         isDark ? 'bg-[#151515]' : 'bg-white'
       } flex flex-col items-center overflow-auto`}
     >
+      <div className='w-full md:flex flex-start py-2 hidden'>
+      <Stories />
+      <CreateStories user={user} />
+      </div>
       {/* Render posts */}
       {posts?.map((post, index) => (
         <div
