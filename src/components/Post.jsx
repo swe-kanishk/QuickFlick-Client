@@ -220,7 +220,7 @@ function Post({ post }) {
   return (
     <>
       <div
-        className={`mt-4 w-full relative px-5 py-6 rounded-[2rem] ${
+        className={`mt-4 min-w-screen relative px-5 py-6 rounded-[2rem] ${
           isDark ? "bg-[#212121] text-white" : "bg-[#f3f3f3] text-black"
         } max-w-md mx-auto`}
         onClick={handleDoubleTap}
@@ -295,7 +295,6 @@ function Post({ post }) {
             </DialogContent>
           </Dialog>
         </div>
-              {console.log(post)}
         {post?.type === "post" && (
           <>
             <p className="my-5 mx-2">{post?.caption}</p>
@@ -315,6 +314,12 @@ function Post({ post }) {
           <div>
             <p className="my-5 mx-2">{post.caption}</p>
             <AudioPostPlayer audioSrc={post?.audio} />
+            {showHeart && (
+                <IoMdHeart
+                  size={50}
+                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+                />
+              )}
           </div>
         )}
         {post?.type === "short" && (
@@ -322,6 +327,12 @@ function Post({ post }) {
             <p className="my-5 mx-2">{post?.caption}</p>
             <div className="flex items-center justify-center max-h-[25rem] overflow-hidden bg-transparent">
             <video src={post?.video} autoPlay loop={3} muted controls className="w-full rounded-lg"></video>
+            {showHeart && (
+                <IoMdHeart
+                  size={50}
+                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+                />
+              )}
             </div>
           </div>
         )}
@@ -353,6 +364,12 @@ function Post({ post }) {
                 </button>
               )}
             </div>
+            {showHeart && (
+                <IoMdHeart
+                  size={50}
+                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+                />
+              )}
           </div>
         )}
         <PostActions

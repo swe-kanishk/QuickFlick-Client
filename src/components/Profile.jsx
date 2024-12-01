@@ -294,7 +294,7 @@ const Profile = React.memo(() => {
                   <div className="flex flex-col items-center gap-2 justify-center">
                     {active === "post" && (
                       <>
-                        <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
+                        <span className="border-[1.5px]  w-fit rounded-full p-4 border-black">
                           <IoCameraOutline size={"2rem"} />
                         </span>
                         <h1 className="text-3xl text-center font-semibold">
@@ -317,7 +317,7 @@ const Profile = React.memo(() => {
                     )}
                     {active === "short" && (
                       <>
-                        <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
+                        <span className="border-[1.5px]  w-fit rounded-full p-4 border-black">
                           <SiYoutubeshorts size={"2rem"} />
                         </span>
 
@@ -341,7 +341,7 @@ const Profile = React.memo(() => {
                     )}
                     {active === "audio" && (
                       <>
-                        <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
+                        <span className="border-[1.5px]  w-fit rounded-full p-4 border-black">
                           <RiVoiceprintFill size={"2rem"} />
                         </span>
                         <h1 className="text-3xl text-center font-semibold">
@@ -365,7 +365,7 @@ const Profile = React.memo(() => {
                     )}
                     {active === "blog" && (
                       <>
-                        <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
+                        <span className="border-[1.5px]  w-fit rounded-full p-4 border-black">
                           <MdEditDocument size={"2rem"} />
                         </span>
                         <h1 className="text-3xl text-center font-semibold">
@@ -387,7 +387,7 @@ const Profile = React.memo(() => {
                     )}
                     {active === "saved" && (
                       <>
-                        <span className="border-[1.5px] z-50 w-fit rounded-full p-4 border-black">
+                        <span className="border-[1.5px]  w-fit rounded-full p-4 border-black">
                           <BsFillCollectionFill size={"2rem"} />
                         </span>
 

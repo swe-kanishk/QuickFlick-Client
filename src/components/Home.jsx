@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Feed from './Feed'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import RightSidebar from './RightSidebar'
 import getAllPosts from '@/hooks/useGetAllPosts'
@@ -14,9 +13,10 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { setTheme } from '@/redux/authSlice'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
+import Posts from './Posts'
 
 function Home() {
-  getAllPosts()
+  // getAllPosts()
   getSuggestedUsers()
 
   const [story, setViewStory] = useState(false);
@@ -83,7 +83,7 @@ function Home() {
         <CreateStories user={user} />
         <Stories />
         </div>
-       <Feed />
+       <Posts />
         <Outlet />
       </div>
       <RightSidebar />
