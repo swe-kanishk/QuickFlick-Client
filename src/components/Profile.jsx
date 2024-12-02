@@ -17,7 +17,11 @@ import { LuContact2 } from "react-icons/lu";
 import { FaRegBookmark } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { FaComment, FaUser } from "react-icons/fa6";
-import { setAuthUser, setUserProfile } from "@/redux/authSlice";
+import {
+  setAuthUser,
+  setSelectedUser,
+  setUserProfile,
+} from "@/redux/authSlice";
 import { toast } from "sonner";
 import axios from "axios";
 import { IoIosCloseCircleOutline, IoMdGrid } from "react-icons/io";
@@ -55,7 +59,11 @@ const Profile = React.memo(() => {
     () => userProfile?._id === user?._id,
     [userProfile, user]
   );
-  const isFollowing = true; // Replace this with actual following logic
+
+  // Replace this with actual following logic
+  const isFollower = user?.follower.find((followerPerson) => {
+    return followerPerson?.id === userProfile?.id;
+  }); // Replace this with actual following logic
 
   const dispatch = useDispatch();
 
@@ -68,7 +76,6 @@ const Profile = React.memo(() => {
     };
   }, [dispatch]);
 
-  
   const category = useMemo(() => {
     const categories = {
       audio: [],
@@ -88,15 +95,72 @@ const Profile = React.memo(() => {
     return categories;
   }, [userProfile?.posts]);
 
-  const [openSettings, setOpenSettings] = useState(false)
+  const [openSettings, setOpenSettings] = useState(false);
+
+  const handleFollowUnfollow = async (userId) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/followorunfollow/${userId}`,
+        {},
+        { withCredentials: true }
+      );
+  
+      if (response.data.success) {
+        toast.success(response.data.message);
+  
+        // Dispatch updated user to Redux
+        dispatch(setAuthUser(response.data.user));
+  
+        // Update viewList dynamically
+        const updatedFollowing = response.data.user.following;
+        const updatedFollowers = response.data.user.follower;
+  
+        updateViewList(viewList.type, {
+          ...viewList.data,
+          ...(viewList.type === "following" && { following: updatedFollowing }),
+          ...(viewList.type === "followers" && { followers: updatedFollowers }),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+  
+  useEffect(() => {
+    if (viewList.type === "following") {
+      updateViewList("following", user?.following, viewList.isOpen);
+    } else if (viewList.type === "followers") {
+      updateViewList("followers", user?.follower, viewList.isOpen);
+    }
+  }, [user, viewList.type]);
+  
+  const isFollowing = useMemo(() => {
+    return user?.following?.some((followingPerson) => followingPerson?.id === userProfile?.id);
+  }, [user, userProfile]);
+  
+  const sendMessageHandler = () => {
+    // localStorage.setItem("selectedUser", JSON.stringify(userProfile));
+    dispatch(setSelectedUser(userProfile));
+    navigate("/chat");
+  };
 
   return (
     <div
-      className={`flex flex-col max-w-5xl md:h-screen md:max-w-full h-[calc(100vh-60px)] mx-auto items-start ${
+      className={`flex flex-col relative max-w-5xl md:h-screen md:max-w-full h-[calc(100vh-60px)] mx-auto items-start ${
         isDark ? "bg-[#151515] text-white" : "bg-white text-black"
       } justify-start px-5 md:px-0 py-3`}
     >
-      <Settings openSettings={openSettings} setOpenSettings={setOpenSettings} />
+      <div
+        className={`absolute h-screen md:items-center ${
+          openSettings ? "flex" : "hidden"
+        } pb-[70px] md:py-3 justify-center w-full z-30 bg-black bg-opacity-60 px-6 items-end left-[0]`}
+      >
+        <Settings
+          openSettings={openSettings}
+          setOpenSettings={setOpenSettings}
+        />
+      </div>
       <div className="flex w-full flex-col items-start md:p-8">
         <div className="flex-col w-full flex">
           <span className="font-bold flex  items-center gap-2 justify-between mb-5 text-lg ">
@@ -104,7 +168,11 @@ const Profile = React.memo(() => {
               <FaUser />
               {userProfile?.username}
             </div>
-                    <TbSettingsFilled onClick={() => setOpenSettings(!openSettings)} size={"24px"} className="cursor-pointer" />
+            <TbSettingsFilled
+              onClick={() => setOpenSettings(!openSettings)}
+              size={"24px"}
+              className="cursor-pointer"
+            />
           </span>
           <section className="flex items-center justify-start gap-8 md:justify-center">
             <Avatar className="min-w-[5rem] min-h-[5rem] rounded-full aspect-square object-cover overflow-hidden">
@@ -183,16 +251,29 @@ const Profile = React.memo(() => {
                 </>
               ) : isFollowing ? (
                 <>
-                  <button className={`font-medium px-3 py-1 rounded-md mx-1 ${isDark ? 'bg-[#212020]' : 'bg-gray-200'}`}>
+                  <button
+                    onClick={() => handleFollowUnfollow(userProfile?._id)}
+                    className={`font-medium px-3 py-1 rounded-md mx-1 ${
+                      isDark ? "bg-[#212020]" : "bg-gray-200"
+                    }`}
+                  >
                     Unfollow
                   </button>
-                  <button className={`font-medium px-2 py-1 rounded-md mx-1 ${isDark ? 'bg-[#212020]' : 'bg-gray-200'}`}>
+                  <button
+                    onClick={sendMessageHandler}
+                    className={`font-medium px-2 py-1 rounded-md mx-1 ${
+                      isDark ? "bg-[#212020]" : "bg-gray-200"
+                    }`}
+                  >
                     Message
                   </button>
                 </>
               ) : (
-                <button className="font-medium px-3 py-1 rounded-md mx-1 hover:bg-blue-500 bg-[#3e8dfd] text-white">
-                  Follow
+                <button
+                  onClick={() => handleFollowUnfollow(userProfile?._id)}
+                  className="font-medium px-3 py-1 rounded-md mx-1 hover:bg-blue-500 bg-[#3e8dfd] text-white"
+                >
+                  {isFollower ? "follow back" : "follow"}
                 </button>
               )}
             </div>
@@ -400,7 +481,7 @@ const Profile = React.memo(() => {
                           collection today!
                         </span>
                         <Link
-                          to={'/explore'}
+                          to={"/explore"}
                           className="text-blue-500 hover:text-black cursor-pointer font-medium"
                         >
                           Explore and Collect your favorite content
@@ -535,11 +616,13 @@ const Profile = React.memo(() => {
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent bubbling
                       e.preventDefault(); // Prevent navigation
-                      console.log("hello");
+                      handleFollowUnfollow(person._id)
                     }}
                     className="px-3 py-1 bg-gray-300 rounded-md text-black"
                   >
-                    unfollow
+                    {viewList.type === "following" && "Unfollow"}
+                    {viewList.type === "followers" &&
+                      (isFollowing ? "Unfollow" : "Follow Back")}
                   </button>
                 </Link>
               );

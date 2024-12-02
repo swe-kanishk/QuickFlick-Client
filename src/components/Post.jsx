@@ -193,6 +193,14 @@ function Post({ post }) {
       );
       if (res.data.success) {
         toast.success(res.data.message);
+        if(res.data.type == "saved") {
+          const updatedUser = {...user, saved: [...user.saved, post?._id]}
+          dispatch(setAuthUser(updatedUser))
+        }
+        else {
+          const updatedUser = {...user, saved: user.saved.filter((postId) => postId !== post._id)}
+          dispatch(setAuthUser(updatedUser))
+        }
       }
     } catch (error) {
       console.log(error);
@@ -263,25 +271,17 @@ function Post({ post }) {
             </DialogTrigger>
             <DialogContent className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white">
               {post?.author?._id !== user?._id &&
-                (user?.following?.includes(post?.author?._id) ? (
+                (
                   <Button
                     variant="ghost"
                     className="cursor-pointer border-none outline-none w-full font-bold"
                     onClick={() => handleFollowUnfollow(post?.author?._id)}
                   >
-                    Unfollow
+                    {user?.following?.some((person) => post?.author?._id === person?._id) ? "Unfollow" : "Follow"}
                   </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    className="cursor-pointer border-none outline-none w-full font-bold"
-                    onClick={() => handleFollowUnfollow(post?.author?._id)}
-                  >
-                    Follow
-                  </Button>
-                ))}
-              <Button variant="ghost" className="cursor-pointer w-full">
-                Add to favourites
+                )}
+              <Button onClick={savePostHandler} variant="ghost" className="cursor-pointer w-full">
+                {user.saved.includes(post._id) ? "Remove from Collections" : "Add to Collections"}
               </Button>
               {user && user?._id === post?.author?._id && (
                 <Button

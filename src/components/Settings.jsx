@@ -48,7 +48,7 @@ function Settings({ openSettings, setOpenSettings }) {
   return (
     <Dialog open={openSettings}>
       <DialogContent
-        className={`max-w-[90%] sm:max-w-lg bg-white text-slate-900 px-3 mx-auto bottom-[60px] absolute w-full py-3 rounded-t-lg`}
+        className={`bg-white text-slate-900 max-w-lg px-3 w-[90%]  py-3 md:rounded-lg rounded-t-lg`}
         onInteractOutside={() => setOpenSettings(!openSettings)}
       >
         <DialogHeader className="text-center mb-3 text-xl font-semibold">Settings</DialogHeader>
