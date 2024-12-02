@@ -19,7 +19,7 @@ import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
 import moment from "moment";
 import { FaBookmark } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setAuthUser } from "@/redux/authSlice";
 import Carousel from "./Carousel";
 import {
@@ -224,7 +224,7 @@ function Post({ post }) {
     }
     lastTap = now;
   };
-
+  const navigate = useNavigate()
   return (
     <>
       <div
@@ -234,8 +234,8 @@ function Post({ post }) {
         onClick={handleDoubleTap}
       >
         <div className="flex items-center justify-between">
-          <Link
-            to={`/profile/${post?.author?._id}`}
+          <div
+            onClick={() => navigate(`/profile/${post?.author?._id}`)}
             className="flex items-center gap-3"
           >
             <Avatar className="w-8 h-8 rounded-full overflow-hidden">
@@ -254,7 +254,7 @@ function Post({ post }) {
                   Posted {moment(post?.createdAt).fromNow()}.
                 </span>
               </div>
-              {post?.author?._id === user?._id && (
+              {post?.author?._id === user?._id ? (
                 <span
                   className={`text-xs ml-5 px-2 py-1 ${
                     isDark ? "bg-gray-100 text-black" : "bg-gray-700 text-white"
@@ -262,9 +262,23 @@ function Post({ post }) {
                 >
                   Author
                 </span>
+              ) : (
+                <span
+                  className={`text-xs relative px-2 py-1 ${
+                    isDark ? 
+                    user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-700 left-[80%]" : "bg-blue-500 text-white left-[90%]"
+                    : user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-400 left-[80%]" : "bg-blue-500 text-white left-[90%]"
+                  } font-medium rounded-sm cursor-pointer`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleFollowUnfollow(post?.author?._id)
+                  }}
+                >
+                  { user?.following?.some((person) => person?._id === post?.author?._id) ? "Unfollow" : "Follow"}
+                </span>
               )}
             </div>
-          </Link>
+          </div>
           <Dialog>
             <DialogTrigger asChild>
               <MoreHorizontal className="cursor-pointer" />
