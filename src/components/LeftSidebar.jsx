@@ -230,7 +230,7 @@ function LeftSidebar() {
 
                 {item.label === "Notifications" && unreadCount ? (
                   <>
-                    <span className="absolute bottom-5 right-[-6px] bg-black rounded-full text-white h-5 w-5 text-[12px] flex items-center justify-center">
+                    <span className={`absolute bottom-10 left-[2rem]  rounded-full ${isDark ? 'bg-white text-black' : 'bg-black text-white'} h-5 w-5 text-[12px] flex items-center justify-center`}>
                       {unreadCount}
                     </span>
                     <span className="absolute h-2 w-2 bg-black rounded-full bottom-0"></span>

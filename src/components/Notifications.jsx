@@ -115,7 +115,7 @@ function Notifications() {
                 )}
                 <p className="text-[12px]">{moment(notification?.createdAt).fromNow()}</p>
                 </div>
-                {notification?.isRead && (
+                {!notification?.isRead && (
                   <span className="h-3 w-3 right-0 rounded-full bg-blue-700"></span>
                 )}
                 </div>
