@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import moment from "moment";
 import axios from "axios";
 import { FaRegBell } from "react-icons/fa6";
+import { FaMusic } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function Notifications() {
   const dispatch = useDispatch();
@@ -54,7 +56,7 @@ function Notifications() {
           return (
             <div key={notification?._id} className="w-full relative flex justify-between items-center rounded-xl p-3 gap-3">
                 
-              <div className="flex gap-3 items-center">
+              <Link to={`/profile/${notification.sender._id}`} className="flex gap-3 items-center">
                 <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
                   <AvatarImage
                     src={notification?.sender?.avatar}
@@ -75,13 +77,13 @@ function Notifications() {
                   </span>
                   <p>{notification?.message}</p>
                 </div>
-            </div>
+            </Link>
                 <div className="flex gap-[5px] justify-center items-center">
                 <div className="flex gap-[3px] flex-col justify-center items-center">
-                {notification?.postId?.image && (
+                {notification?.postId?.type === "post" && (
                   <Avatar className="w-[3rem]  h-[3rem] rounded-lg overflow-hidden">
                     <AvatarImage
-                      src={notification?.postId?.image[0]}
+                      src={notification?.postId?.images[0]}
                       className="w-[3rem] h-[3rem] rounded-lg object-cover aspect-square overflow-hidden"
                       alt="user-avatar"
                     />
@@ -93,6 +95,23 @@ function Notifications() {
                       />
                     </AvatarFallback>
                   </Avatar>
+                )}
+                {notification?.postId?.type === "short" && (
+                  <video src={video} className="h-12 aspect-square object-cover"></video>
+                )}
+                {notification?.postId?.type === "blog" && (
+                  <div className="h-12 w-16 border-1 flex items-center justify-center border border-gray-400 p-1 aspect-square overflow-hidden text-[10px] object-cover">
+                    <p className="h-12 w-16 aspect-square overflow-hidden text-[6px] object-cover">{notification?.postId?.content}</p>
+                  </div>
+                )}
+                {notification?.postId?.type === "audio" && (
+                  <div className='rounded-full mx-auto  bg-gradient-to-br from-[#ff48b6] via-[#4673ef] to-[#ffffff] overflow-hidden relative h-12 w-12'>
+                  <div className='h-8 w-8 rounded-full p-1  absolute mx-auto left-2 flex items-center bg-black justify-center top-2'>
+                    <span className='h-6 w-6 z-20 flex items-center justify-center text-white bg-gradient-to-br from-teal-800  to-green-500 rounded-full '>
+                      <FaMusic size={12} />
+                    </span>
+                  </div>
+                  </div>
                 )}
                 <p className="text-[12px]">{moment(notification?.createdAt).fromNow()}</p>
                 </div>

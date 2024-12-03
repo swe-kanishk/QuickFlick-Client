@@ -266,8 +266,8 @@ function Post({ post }) {
                 <span
                   className={`text-xs relative px-2 py-1 ${
                     isDark ? 
-                    user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-700 left-[80%]" : "bg-blue-500 text-white left-[90%]"
-                    : user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-400 left-[80%]" : "bg-blue-500 text-white left-[90%]"
+                    user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-700 left-[65%]" : "bg-blue-500 text-white left-[90%]"
+                    : user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-400 left-[65%]" : "bg-blue-500 text-white left-[90%]"
                   } font-medium rounded-sm cursor-pointer`}
                   onClick={(e) => {
                     e.stopPropagation()
