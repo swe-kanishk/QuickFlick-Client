@@ -139,7 +139,7 @@ const CommentDialog = ({
                 <Comment key={comment._id} comment={comment} />
               ))}
             </div>
-            <div className="py-4 pb-[80px] md:pb-4">
+            <div className={`py-4 pb-[80px] border-t  ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}  w-full absolute -bottom-3 md:pb-4`}>
               <div className="flex justify-between pr-3 border-b border-gray-300">
                 <div className="flex gap-4 pb-4 pl-3">
                   {liked ? (
@@ -168,7 +168,7 @@ const CommentDialog = ({
                 <FaRegBookmark size={"20px"} className="cursor-pointer" />
               </div>
 
-              <div className="flex items-center gap-2 mt-2 pl-3">
+              <div className="flex z-10 items-center gap-2 mt-2 pl-3">
                 <input
                   type="text"
                   value={text}

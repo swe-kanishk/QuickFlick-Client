@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
@@ -10,10 +10,13 @@ import { IoCreate } from "react-icons/io5";
 import axios from "axios";
 import { readFileAsDataURL } from "@/lib/utils";
 import ViewStory from "./ViewStory";
+import { set } from "react-hook-form";
+import { Loader } from "react-feather";
+import { setAuthUser } from "@/redux/authSlice";
 
 function CreateStories() {
   const { user, isDark } = useSelector((store) => store.auth);
-
+  const [progress, setProgress] = useState(0);
   const [file, setFile] = useState("");
   const [caption, setCaption] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -21,8 +24,9 @@ function CreateStories() {
   const [viewStory, setViewStory] = useState(false);
   const [storyActionDialog, setStoryActionDialog] = useState(false);
 
-  const imageRef = useRef();
+  const dispatch = useDispatch()
 
+  const imageRef = useRef();
   const handleCreateStories = async () => {
     const formData = new FormData();
     formData.append("caption", caption);
@@ -35,18 +39,27 @@ function CreateStories() {
         {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            setProgress(
+              parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+            );
+          }
         }
       );
       if (response.data.success) {
+        const updatedUser = { ...user, stories: [...user.stories, response.data.story._id] }
+        dispatch(setAuthUser(updatedUser))
         toast.success(response.data.message);
         // Reset fields after successful story creation
         setFile("");
         setCaption("");
         setImagePreview("");
         setOpenCreateStory(false);
+        setProgress(0);
       }
     } catch (error) {
       console.error(error);
+      toast.error('Something went wrong!');
     }
   };
 
@@ -186,7 +199,14 @@ function CreateStories() {
               type="submit"
               className="w-full mt-3"
             >
-              Post
+              {
+                progress ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader className="animate-spin h-4 w-4" />
+                    <span>{progress}%</span>
+                  </div>
+                ) : 'Post'
+              }
             </Button>
           )}
         </DialogContent>

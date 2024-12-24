@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'sonner';
 import { setAuthUser } from '@/redux/authSlice';
+import LargeTextHandler from './LargeTextHandler';
 
 function SuggestedUsers() {
   const { suggestedUsers, user } = useSelector((store) => store.auth);
@@ -44,12 +45,13 @@ function SuggestedUsers() {
       </div>
       {suggestedUsers?.map((suggestedUser) => {
         return (
-          <div key={suggestedUser._id} className="my-3 flex items-center justify-between w-full">
-            <Link
-              to={`/profile/${suggestedUser?._id}`}
-              className="flex items-center gap-3"
+          <div key={suggestedUser._id} className="my-3 flex items-start justify-between w-full">
+            <div
+
+              className="flex items-start gap-3"
             >
-              <Avatar className="w-8 h-8 rounded-full object-cover overflow-hidden">
+              <Link className='flex items-center justify-center' to={`/profile/${suggestedUser?._id}`}>
+              <Avatar className="max-h-8 max-w-8 min-h-8 min-w-8 rounded-full object-cover overflow-hidden">
                 <AvatarImage src={suggestedUser?.avatar} alt="@shadcn" />
                 <AvatarFallback>
                   <img
@@ -58,14 +60,15 @@ function SuggestedUsers() {
                   />
                 </AvatarFallback>
               </Avatar>
+              </Link>
               <span className="flex flex-col justify-center items-start">
                 <h1>{suggestedUser?.username}</h1>
                 <span className="text-gray-400 text-sm relative bottom-1">
-                  {suggestedUser?.bio || "Bio here..."}
+                  {suggestedUser?.bio ? LargeTextHandler(suggestedUser?.bio, 30) : "Bio here..."}
                 </span>
               </span>
-            </Link>
-            <span onClick={() => handleFollowUnfollow(suggestedUser._id)} className='text-[#3BADF8] text-sm cursor-pointer hover:text-[#5287f0] font-medium'>{
+            </div>
+            <span onClick={() => handleFollowUnfollow(suggestedUser._id)} className='text-[#3BADF8] text-sm cursor-pointer ml-3 hover:text-[#5287f0] font-medium'>{
             user?.following.some((followingUser) => followingUser._id === suggestedUser._id) ? 'Following' : 'follow'
             }</span>
             </div>

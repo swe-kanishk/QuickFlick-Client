@@ -3,14 +3,7 @@ import { MoreHorizontal } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { IoMdHeartEmpty } from "react-icons/io";
-import { BsChat } from "react-icons/bs";
-import {
-  PiPaperPlaneTilt,
-  PiSpeakerSimpleHighFill,
-  PiSpeakerSimpleSlashFill,
-} from "react-icons/pi";
-import { FaLinkedin, FaRegBookmark, FaRegCopy } from "react-icons/fa6";
+import { FaLinkedin, FaRegCopy } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -18,8 +11,7 @@ import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
 import moment from "moment";
-import { FaBookmark } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "@/redux/authSlice";
 import Carousel from "./Carousel";
 import {
@@ -34,7 +26,6 @@ import {
   FaEnvelope,
   FaTelegramPlane,
   FaWhatsapp,
-  FaLink,
 } from "react-icons/fa";
 import PostActions from "./PostActions";
 import AudioPlayer from "./AudioPlayer";
@@ -403,15 +394,17 @@ function Post({ post }) {
           {post.likes.length} likes
         </span>
         {comments.length > 0 && (
-          <span
-            onClick={() => {
-              setOpen(true);
-              dispatch(setSelectedPost(post));
-            }}
-            className="text-gray-400 cursor-pointer"
+          <div onClick={() => {
+            setOpen(true);
+            dispatch(setSelectedPost(post));
+          }}>
+          <span 
+            className="text-gray-400 font-medium cursor-pointer"
           >
             View all {comments.length} comments
           </span>
+          <p className="font-medium text-sm text-gray-400">{comments[0].author.username}: <span className="text-xs">{comments[0]?.text.length > 40 ? comments[0]?.text.substr(0, 40) + '...' : comments[0]?.text}</span></p>
+          </div>
         )}
         <CommentDialog
           open={open}

@@ -7,7 +7,7 @@ export default function AuthRoute({element}) {
 
     console.log("AuthRoute check:", user);
 
-    if (!user) {
+    if (!user || !user.isVerified) {
       return element;
     }
     return <Navigate to="/" />;
