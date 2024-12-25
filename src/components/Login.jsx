@@ -13,7 +13,7 @@ import { setAuthUser, setTheme } from "@/redux/authSlice";
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [input, setInput] = useState({ email: "", password: "" });
+  const [input, setInput] = useState({ email: "cse.kanishkk@gmail.com", password: "{@Kt_18}" });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
