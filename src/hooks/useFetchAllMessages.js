@@ -25,7 +25,7 @@ const useFetchAllMessages = () => {
         }
       } catch (error) {
         dispatch(setMessages([]));
-        console.error("Error fetching messages:", error);
+        console.log("Error fetching messages:", error);
       }
     };
 

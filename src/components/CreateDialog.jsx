@@ -34,10 +34,6 @@ function CreateDialog({ open, setOpen }) {
   };
 
   const handleSubmit = () => {
-    // Handle submit logic based on the selected option
-    console.log({
-      selectedOption,
-    });
     setOpen(false); // Close the dialog after submission
   };
 

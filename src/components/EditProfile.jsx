@@ -73,12 +73,11 @@ function EditProfile() {
         
       }
     } catch (error) {
-      console.log(error);
+      toast.error('something went wrong!')
     } finally {
       setLoading(false)
     }
   };
-  console.log(input.avatar)
   return (
     <div className={`flex w-full h-[calc(100vh-60px)] md:h-screen px-3 md:px-12 mx-auto md:py-8 py-4 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
       <section className="flex flex-col gap-6 w-full">

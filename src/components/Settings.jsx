@@ -18,11 +18,10 @@ function Settings({ openSettings, setOpenSettings }) {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/update-theme`, { withCredentials: true })
       if(response.data.success){
-        console.log(response.data)
         dispatch(setTheme(response.data.isDark))
       }
     } catch (error) {
-      console.log(error)
+      toast.error('something went wrong!')
     }
   }
 
@@ -38,7 +37,7 @@ function Settings({ openSettings, setOpenSettings }) {
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
+      toast.error('something went wrong!')
       toast.error(error.response.data.message);
     }finally {
         setLoading(false)

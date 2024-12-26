@@ -136,7 +136,6 @@ function Post({ post }) {
           withCredentials: true,
         }
       );
-      console.log(response);
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -146,7 +145,7 @@ function Post({ post }) {
         dispatch(setAuthUser(response.data.user));
       }
     } catch (error) {
-      console.log(error);
+      toast.error('something went wrong!')
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -184,17 +183,19 @@ function Post({ post }) {
       );
       if (res.data.success) {
         toast.success(res.data.message);
-        if(res.data.type == "saved") {
-          const updatedUser = {...user, saved: [...user.saved, post?._id]}
-          dispatch(setAuthUser(updatedUser))
-        }
-        else {
-          const updatedUser = {...user, saved: user.saved.filter((postId) => postId !== post._id)}
-          dispatch(setAuthUser(updatedUser))
+        if (res.data.type == "saved") {
+          const updatedUser = { ...user, saved: [...user.saved, post?._id] };
+          dispatch(setAuthUser(updatedUser));
+        } else {
+          const updatedUser = {
+            ...user,
+            saved: user.saved.filter((postId) => postId !== post._id),
+          };
+          dispatch(setAuthUser(updatedUser));
         }
       }
     } catch (error) {
-      console.log(error);
+      toast.error("something went wrong!");
     }
   };
 
@@ -215,7 +216,7 @@ function Post({ post }) {
     }
     lastTap = now;
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <>
       <div
@@ -255,17 +256,29 @@ function Post({ post }) {
                 </span>
               ) : (
                 <span
-                  className={`text-xs relative px-2 py-1 ${
-                    isDark ? 
-                    user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-700 left-[65%]" : "bg-blue-500 text-white left-[90%]"
-                    : user?.following?.some((person) => person?._id === post?.author?._id) ? "bg-gray-400 left-[65%]" : "bg-blue-500 text-white left-[90%]"
+                  className={`text-xs relative px-3 mr-[1rem] py-[8px] ${
+                    isDark
+                      ? user?.following?.some(
+                          (person) => person?._id === post?.author?._id
+                        )
+                        ? "bg-gray-700 left-[65%]"
+                        : "bg-blue-500 text-white left-[90%]"
+                      : user?.following?.some(
+                          (person) => person?._id === post?.author?._id
+                        )
+                      ? "bg-gray-400 left-[65%]"
+                      : "bg-blue-500 text-white left-[90%]"
                   } font-medium rounded-sm cursor-pointer`}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleFollowUnfollow(post?.author?._id)
+                    e.stopPropagation();
+                    handleFollowUnfollow(post?.author?._id);
                   }}
                 >
-                  { user?.following?.some((person) => person?._id === post?.author?._id) ? "Unfollow" : "Follow"}
+                  {user?.following?.some(
+                    (person) => person?._id === post?.author?._id
+                  )
+                    ? "Unfollow"
+                    : "Follow"}
                 </span>
               )}
             </div>
@@ -275,18 +288,27 @@ function Post({ post }) {
               <MoreHorizontal className="cursor-pointer" />
             </DialogTrigger>
             <DialogContent className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white">
-              {post?.author?._id !== user?._id &&
-                (
-                  <Button
-                    variant="ghost"
-                    className="cursor-pointer border-none outline-none w-full font-bold"
-                    onClick={() => handleFollowUnfollow(post?.author?._id)}
-                  >
-                    {user?.following?.some((person) => post?.author?._id === person?._id) ? "Unfollow" : "Follow"}
-                  </Button>
-                )}
-              <Button onClick={savePostHandler} variant="ghost" className="cursor-pointer w-full">
-                {user.saved.includes(post._id) ? "Remove from Collections" : "Add to Collections"}
+              {post?.author?._id !== user?._id && (
+                <Button
+                  variant="ghost"
+                  className="cursor-pointer border-none outline-none w-full font-bold"
+                  onClick={() => handleFollowUnfollow(post?.author?._id)}
+                >
+                  {user?.following?.some(
+                    (person) => post?.author?._id === person?._id
+                  )
+                    ? "Unfollow"
+                    : "Follow"}
+                </Button>
+              )}
+              <Button
+                onClick={savePostHandler}
+                variant="ghost"
+                className="cursor-pointer w-full"
+              >
+                {user.saved.includes(post._id)
+                  ? "Remove from Collections"
+                  : "Add to Collections"}
               </Button>
               {user && user?._id === post?.author?._id && (
                 <Button
@@ -320,19 +342,25 @@ function Post({ post }) {
             <p className="my-5 mx-2">{post.caption}</p>
             <AudioPostPlayer audioSrc={post?.audio} />
             {showHeart && (
-                <IoMdHeart
-                  size={50}
-                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
-                />
-              )}
+              <IoMdHeart
+                size={50}
+                className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+              />
+            )}
           </div>
         )}
         {post?.type === "short" && (
           <div>
             <p className="my-5 mx-2">{post?.caption}</p>
             <div className="flex items-center justify-center max-h-[25rem] overflow-hidden bg-transparent">
-            <video src={post?.video} loop={3} muted controls className="w-full rounded-lg"></video>
-            {showHeart && (
+              <video
+                src={post?.video}
+                loop={3}
+                muted
+                controls
+                className="w-full rounded-lg"
+              ></video>
+              {showHeart && (
                 <IoMdHeart
                   size={50}
                   className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
@@ -355,7 +383,7 @@ function Post({ post }) {
                   WebkitLineClamp: showFullContent ? "none" : 20, // Clamp to 10 lines
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  whiteSpace: "pre-wrap"
+                  whiteSpace: "pre-wrap",
                 }}
               >
                 {post?.content}
@@ -370,11 +398,11 @@ function Post({ post }) {
               )}
             </div>
             {showHeart && (
-                <IoMdHeart
-                  size={50}
-                  className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
-                />
-              )}
+              <IoMdHeart
+                size={50}
+                className="absolute text-white z-50 top-[45%] left-[45%] mx-auto transform animate-ping"
+              />
+            )}
           </div>
         )}
         <PostActions
@@ -394,16 +422,23 @@ function Post({ post }) {
           {post.likes.length} likes
         </span>
         {comments.length > 0 && (
-          <div onClick={() => {
-            setOpen(true);
-            dispatch(setSelectedPost(post));
-          }}>
-          <span 
-            className="text-gray-400 font-medium cursor-pointer"
+          <div
+            onClick={() => {
+              setOpen(true);
+              dispatch(setSelectedPost(post));
+            }}
           >
-            View all {comments.length} comments
-          </span>
-          <p className="font-medium text-sm text-gray-400">{comments[0].author.username}: <span className="text-xs">{comments[0]?.text.length > 40 ? comments[0]?.text.substr(0, 40) + '...' : comments[0]?.text}</span></p>
+            <span className="text-gray-400 font-medium cursor-pointer">
+              View all {comments.length} comments
+            </span>
+            <p className="font-medium text-sm text-gray-400">
+              {comments[0].author.username}:{" "}
+              <span className="text-xs">
+                {comments[0]?.text.length > 40
+                  ? comments[0]?.text.substr(0, 40) + "..."
+                  : comments[0]?.text}
+              </span>
+            </p>
           </div>
         )}
         <CommentDialog

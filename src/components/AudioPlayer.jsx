@@ -16,7 +16,6 @@ const AudioPlayer = ({ post }) => {
     }
     setIsPlaying(!isPlaying);
   };
-  console.log(post)
   return (
     <div>
       <audio

@@ -10,7 +10,6 @@ const postSlice = createSlice({
   reducers: {
     // Reset posts (used for initial page or refreshing the list)
     setPosts: (state, action) => {
-      console.log('Resetting posts:', action.payload); // Debug log
       state.posts = action.payload;
     },
 
@@ -18,15 +17,12 @@ const postSlice = createSlice({
     appendPosts: (state, action) => {
         if(action.payload){
             state.posts = [...state.posts, ...action.payload];
-        }else {
-            console.log('action ka koi payload hai hi nhi')
         }
     },
       
 
     // Set whether more posts exist
     setHasMore: (state, action) => {
-        console.log(state.posts)
       state.hasMore = action.payload;
     },
 

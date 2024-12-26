@@ -68,6 +68,7 @@ function App() {
           `${import.meta.env.VITE_API_URL}/api/v1/user/check-auth`
         );
         if (response.data.success) {
+          console.log(response)
           dispatch(setAuthUser(response.data.user));
           dispatch(setTheme(response.data.user.isDark));
         }

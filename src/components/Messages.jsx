@@ -14,7 +14,6 @@ function Messages({ selectedUser }) {
   const { user, isDark } = useSelector(store => store.auth)
 
   const dispatch = useDispatch();
-  console.log('messages', messages)
   useEffect(() => {
     return () => {
       dispatch(setMessages([]))

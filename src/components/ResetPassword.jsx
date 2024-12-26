@@ -19,12 +19,10 @@ export default function ResetPassword() {
     e.preventDefault();
     setLoading(true)
     if(password !== confirmPassword) {
-        console.log(password, confirmPassword)
         setError("Password doesn't match!")
         setLoading(false)
         return
     }
-    console.log(token)
     try {
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/reset-password/${token}`, {password})
         if(response.data.success){
@@ -32,7 +30,6 @@ export default function ResetPassword() {
             navigate("/login")
         }
     } catch (error) {
-        console.log(error)
         setError(error.response.data.message)
     }
     finally {

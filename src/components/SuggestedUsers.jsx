@@ -22,7 +22,6 @@ function SuggestedUsers() {
           withCredentials: true,
         }
       );
-      console.log(response);
   
       if (response.data.success) {
         toast.success(response.data.message);
@@ -32,7 +31,6 @@ function SuggestedUsers() {
         dispatch(setAuthUser(response.data.user));
       }
     } catch (error) {
-      console.log(error);
       toast.error("An error occurred. Please try again.");
     }
   };

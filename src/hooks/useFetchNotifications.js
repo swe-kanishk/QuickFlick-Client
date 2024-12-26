@@ -13,9 +13,8 @@ const useFetchNotifications = () => {
                 if (response.data.success) {
                     dispatch(setAllNotifications(response.data.notifications));
                 }
-                console.log(response)
             } catch (error) {
-                console.error("Error fetching notifications:", error);
+                console.log("Error fetching notifications:", error);
             }
         };
         

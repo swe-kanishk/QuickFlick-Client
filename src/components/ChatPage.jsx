@@ -8,6 +8,7 @@ import Messages from "./Messages";
 import axios from "axios";
 import { markMessagesAsRead, setMessages } from "@/redux/chatSlice";
 import { FaUser } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 function ChatPage() {
   const { user, isDark, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
@@ -28,12 +29,11 @@ function ChatPage() {
       );
 
       if (res.data.success) {
-        console.log(res.data.newMessage)
         dispatch(setMessages([...messages, res.data.newMessage]));
         setTextMessage("");
       }
     } catch (error) {
-      console.log('err is', error);
+      toast.error('something went wrong!')
     }
   };
 

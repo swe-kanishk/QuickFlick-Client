@@ -45,7 +45,6 @@ function Notifications() {
       console.error("Failed to mark notifications as read:", error);
     }
   })();
-  console.log(Notifications)
   return (
     <div className={`p-3 flex h-[calc(100vh-60px)] md:h-screen flex-col gap-3 ${isDark ? 'bg-[#151515] text-white' : 'bg-white'}`}>
         <div className="border-b border-gray-200">

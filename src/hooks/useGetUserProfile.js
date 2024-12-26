@@ -12,13 +12,12 @@ const getUserProfile = async (userId) => {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/${userId}/profile`, {
           withCredentials: true,
         });
-        console.log(res)
         if (res.data.success) {
           dispatch(setUserProfile(res.data.user));
-          console.log(res.data.user)
         }
       } catch (error) {
         dispatch(setUserProfile(null))
+        console.log(error)
       }
     };
 

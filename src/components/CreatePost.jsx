@@ -41,7 +41,6 @@ function CreatePost({ setCurrentStep, currentStep }) {
     const selectedAudio = e.target.files[0];
     if (selectedAudio) {
       setAudio(selectedAudio);
-      console.log("Audio file selected:", selectedAudio);
     }
   };
 

@@ -21,7 +21,6 @@ function Posts() {
 
   // Fetch posts function
   const fetchPosts = async (currentPage) => {
-    console.log('Fetching page:', currentPage); // Debugging
     if (loading) return; // Prevent multiple requests
     setLoading(true);
 
@@ -30,8 +29,6 @@ function Posts() {
         params: { page: currentPage, limit: 5 },
         withCredentials: true,
       });
-
-      console.log('Full API Response:', response);
 
       if (response.data?.success) {
         const newPosts = response.data.posts;
@@ -43,7 +40,6 @@ function Posts() {
           }
         } else {
           setHasMore(false);
-          console.log('No more posts available');
         }
       } else {
         console.error('API did not return success:', response.data);
@@ -70,7 +66,6 @@ function Posts() {
 
   // Fetch posts when the page changes
   useEffect(() => {
-    console.log('Page changed to:', page); // Debug log for page change
     fetchPosts(page);
   }, [page]);
 
@@ -81,10 +76,8 @@ function Posts() {
 
     observer.current = new IntersectionObserver(
       (entries) => {
-        console.log('Observer entries:', entries); // Debug log
         if (entries[0].isIntersecting) {
           if (hasMore) {
-            console.log('Last post is visible, loading next page...');
             setPage((prevPage) => prevPage + 1); // Fetch next page
           } else {
             if (!endReachedToast.current) {
