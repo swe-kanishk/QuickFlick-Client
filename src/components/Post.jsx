@@ -1,35 +1,18 @@
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { MoreHorizontal } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { FaLinkedin, FaRegCopy } from "react-icons/fa6";
 import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
 import { IoMdHeart } from "react-icons/io";
-import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "@/redux/authSlice";
 import Carousel from "./Carousel";
-import {
-  EmailShareButton,
-  FacebookShareButton,
-  LinkedinShareButton,
-  TelegramShareButton,
-  WhatsappShareButton,
-} from "react-share";
-import {
-  FaFacebookF,
-  FaEnvelope,
-  FaTelegramPlane,
-  FaWhatsapp,
-} from "react-icons/fa";
 import PostActions from "./PostActions";
 import AudioPlayer from "./AudioPlayer";
 import AudioPostPlayer from "./AudioPostPlayer";
+import ShareDialog from "./ShareDialog";
+import PostHeader from "./PostHeader";
 
 function Post({ post }) {
   const token = localStorage.getItem("token");
@@ -125,51 +108,7 @@ function Post({ post }) {
     }
   };
 
-  const handleFollowUnfollow = async (userId) => {
-    try {
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/v1/user/followorunfollow/${userId}`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-
-        const isFollowing = response.data.isFollowing;
-        // Dispatch the updated user to Redux
-        dispatch(setAuthUser(response.data.user));
-      }
-    } catch (error) {
-      toast.error('something went wrong!')
-      toast.error("An error occurred. Please try again.");
-    }
-  };
-
-  const deletePostHandler = async () => {
-    try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/v1/post/delete/${post?._id}`,
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      const updatedPostData = posts.filter(
-        (postItem) => postItem?._id !== post?._id
-      );
-      dispatch(setPosts(updatedPostData));
-      toast.success(res.data.message);
-    } catch (error) {
-      toast.error(error.res.data.message);
-    }
-  };
+  
 
   const savePostHandler = async () => {
     try {
@@ -199,13 +138,6 @@ function Post({ post }) {
     }
   };
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(
-      `${window.location.href}viewPost/${post?._id}`
-    );
-    toast.success("Link copied to clipboard!");
-  };
-
   const handleDoubleTap = () => {
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300; // Time interval for detecting double-tap in ms
@@ -216,7 +148,6 @@ function Post({ post }) {
     }
     lastTap = now;
   };
-  const navigate = useNavigate();
   return (
     <>
       <div
@@ -225,103 +156,7 @@ function Post({ post }) {
         } max-w-md mx-auto`}
         onClick={handleDoubleTap}
       >
-        <div className="flex items-center justify-between">
-          <div
-            onClick={() => navigate(`/profile/${post?.author?._id}`)}
-            className="flex items-center gap-3"
-          >
-            <Avatar className="w-8 h-8 rounded-full overflow-hidden">
-              <AvatarImage src={post?.author?.avatar} alt="@shadcn" />
-              <AvatarFallback>
-                <img
-                  src="https://photosking.net/wp-content/uploads/2024/05/no-dp_16.webp"
-                  alt="Fallback"
-                />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex items-center">
-              <div className="flex flex-col justify-center">
-                <h1>{post?.author?.username}</h1>
-                <span className="text-[12px] text-gray-400">
-                  Posted {moment(post?.createdAt).fromNow()}.
-                </span>
-              </div>
-              {post?.author?._id === user?._id ? (
-                <span
-                  className={`text-xs ml-5 px-2 py-1 ${
-                    isDark ? "bg-gray-100 text-black" : "bg-gray-700 text-white"
-                  } font-medium rounded-sm`}
-                >
-                  Author
-                </span>
-              ) : (
-                <span
-                  className={`text-xs relative px-3 mr-[1rem] py-[8px] ${
-                    isDark
-                      ? user?.following?.some(
-                          (person) => person?._id === post?.author?._id
-                        )
-                        ? "bg-gray-700 left-[65%]"
-                        : "bg-blue-500 text-white left-[90%]"
-                      : user?.following?.some(
-                          (person) => person?._id === post?.author?._id
-                        )
-                      ? "bg-gray-400 left-[65%]"
-                      : "bg-blue-500 text-white left-[90%]"
-                  } font-medium rounded-sm cursor-pointer`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleFollowUnfollow(post?.author?._id);
-                  }}
-                >
-                  {user?.following?.some(
-                    (person) => person?._id === post?.author?._id
-                  )
-                    ? "Unfollow"
-                    : "Follow"}
-                </span>
-              )}
-            </div>
-          </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <MoreHorizontal className="cursor-pointer" />
-            </DialogTrigger>
-            <DialogContent className="grid text-sm max-w-[90%] sm:max-w-lg rounded-lg place-items-center text-center px-3 py-2 bg-white">
-              {post?.author?._id !== user?._id && (
-                <Button
-                  variant="ghost"
-                  className="cursor-pointer border-none outline-none w-full font-bold"
-                  onClick={() => handleFollowUnfollow(post?.author?._id)}
-                >
-                  {user?.following?.some(
-                    (person) => post?.author?._id === person?._id
-                  )
-                    ? "Unfollow"
-                    : "Follow"}
-                </Button>
-              )}
-              <Button
-                onClick={savePostHandler}
-                variant="ghost"
-                className="cursor-pointer w-full"
-              >
-                {user.saved.includes(post._id)
-                  ? "Remove from Collections"
-                  : "Add to Collections"}
-              </Button>
-              {user && user?._id === post?.author?._id && (
-                <Button
-                  onClick={deletePostHandler}
-                  variant="ghost"
-                  className="cursor-pointer w-full"
-                >
-                  Delete
-                </Button>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
+        <PostHeader post={post} />
         {post?.type === "post" && (
           <>
             <p className="my-5 mx-2">{post?.caption}</p>
@@ -472,64 +307,7 @@ function Post({ post }) {
           )}
         </div>
       </div>
-
-      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent className="p-5 mx-auto w-[90%] max-w-lg rounded-lg bg-white text-center shadow-lg">
-          <h2 className="text-lg font-semibold mb-2">Share this Post</h2>
-          <div className="flex justify-evenly gap-8 mb-2">
-            <FacebookShareButton
-              url={`${window.location.href}viewPost/${post?._id}`}
-            >
-              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                <FaFacebookF className="h-5 w-5 text-white" />
-              </span>
-            </FacebookShareButton>
-            <EmailShareButton
-              url={`${window.location.href}viewPost/${post?._id}`}
-            >
-              <span className="flex items-center justify-center p-3 overflow-hidden aspect-square bg-black rounded-full">
-                <FaEnvelope className="h-5 w-5 text-white" />
-              </span>
-            </EmailShareButton>
-            <TelegramShareButton
-              url={`${window.location.href}viewPost/${post?._id}`}
-            >
-              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                <FaTelegramPlane className="h-6 w-6 text-white" />
-              </span>
-            </TelegramShareButton>
-            <WhatsappShareButton
-              url={`${window.location.href}viewPost/${post?._id}`}
-            >
-              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-green-600 rounded-full">
-                <FaWhatsapp className="h-6 w-6 text-white" />
-              </span>
-            </WhatsappShareButton>
-            <LinkedinShareButton
-              url={`${window.location.href}viewPost/${post?._id}`}
-            >
-              <span className="flex items-center justify-center p-2 overflow-hidden aspect-square bg-blue-600 rounded-full">
-                <FaLinkedin className="h-6 w-6 text-white" />
-              </span>
-            </LinkedinShareButton>
-          </div>
-          <span className="mx-auto font-semibold">or</span>
-          <input
-            type="text"
-            value={`${window.location.href}viewPost/${post?._id}`}
-            disabled
-            className="px-3 py-2 rounded-xl border border-blue-600"
-          />
-          <Button
-            variant="ghost"
-            className="w-fit mx-auto bg-blue-700 text-white hover:bg-blue-600 flex items-center justify-center gap-2 hover:text-white text-sm"
-            onClick={copyLink}
-          >
-            <FaRegCopy />
-            <span>Copy Link</span>
-          </Button>
-        </DialogContent>
-      </Dialog>
+         <ShareDialog shareOpen={shareOpen} setShareOpen={setShareOpen} post={post} /> 
     </>
   );
 }
